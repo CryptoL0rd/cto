@@ -48,6 +48,18 @@ export default function Home() {
       // Save player ID to localStorage
       savePlayerId(response.player_id);
 
+      // Save invite code to localStorage for display on game page
+      if (typeof window !== "undefined") {
+        try {
+          localStorage.setItem(
+            `invite_code_${response.game.id}`,
+            response.invite_code
+          );
+        } catch (err) {
+          console.error("Failed to save invite code:", err);
+        }
+      }
+
       // Show success message
       showToast("Game created successfully!", "success");
 
@@ -295,7 +307,7 @@ export default function Home() {
         </ModalHeader>
         <ModalContent>
           <p className="text-slate-300 mb-6">
-            Select the game mode you'd like to play:
+            Select the game mode you&apos;d like to play:
           </p>
           <div className="space-y-3">
             <button
