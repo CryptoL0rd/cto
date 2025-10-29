@@ -5,9 +5,11 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const gameId = searchParams.get('game_id');
 
+    console.log('[API] Get game state:', { gameId });
+
     if (!gameId) {
       return NextResponse.json(
-        { error: 'game_id is required' },
+        { error: 'game_id parameter is required' },
         { status: 400 }
       );
     }
@@ -56,10 +58,15 @@ export async function GET(request: Request) {
       messages,
     });
   } catch (error) {
-    console.error('Error getting game state:', error);
+    console.error('[API] Error getting game state:', error);
     return NextResponse.json(
-      { error: 'Failed to get game state' },
+      { 
+        error: 'Failed to get game state',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
       { status: 500 }
     );
   }
 }
+
+export const dynamic = 'force-dynamic';

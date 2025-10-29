@@ -10,13 +10,15 @@ function generateInviteCode(): string {
 }
 
 function generateId(): string {
-  return Math.random().toString(36).substring(2, 15);
+  return `${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
 }
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { mode, player_name, is_ai_opponent } = body;
+
+    console.log('[API] Create game request:', { mode, player_name, is_ai_opponent });
 
     if (!mode || !['classic3', 'gomoku'].includes(mode)) {
       return NextResponse.json(
@@ -56,6 +58,8 @@ export async function POST(request: Request) {
       is_ai: false,
     };
 
+    console.log('[API] Game created:', { gameId: inviteCode, playerId, mode });
+
     return NextResponse.json(
       {
         game,
@@ -71,10 +75,15 @@ export async function POST(request: Request) {
       }
     );
   } catch (error) {
-    console.error('Error creating game:', error);
+    console.error('[API] Error creating game:', error);
     return NextResponse.json(
-      { error: 'Failed to create game' },
+      { 
+        error: 'Failed to create game',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
       { status: 500 }
     );
   }
 }
+
+export const dynamic = 'force-dynamic';
