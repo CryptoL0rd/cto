@@ -5,6 +5,8 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { game_id, player_id, text } = body;
 
+    console.log('[API] Send message:', { game_id, player_id, text });
+
     if (!game_id || !player_id) {
       return NextResponse.json(
         { error: 'game_id and player_id are required' },
@@ -37,10 +39,15 @@ export async function POST(request: Request) {
       },
     });
   } catch (error) {
-    console.error('Error sending message:', error);
+    console.error('[API] Error sending message:', error);
     return NextResponse.json(
-      { error: 'Failed to send message' },
+      { 
+        error: 'Failed to send message',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
       { status: 500 }
     );
   }
 }
+
+export const dynamic = 'force-dynamic';

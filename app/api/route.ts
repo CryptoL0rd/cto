@@ -4,6 +4,8 @@ export async function GET() {
   return NextResponse.json({
     ok: true,
     version: '1.0.0',
-    timestamp: Date.now(),
+    timestamp: new Date().toISOString(),
   });
 }
+
+export const dynamic = 'force-dynamic';

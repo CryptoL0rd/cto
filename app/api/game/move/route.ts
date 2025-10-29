@@ -5,6 +5,8 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { game_id, player_id, column_index, row_index } = body;
 
+    console.log('[API] Make move:', { game_id, player_id, column_index, row_index });
+
     if (!game_id || !player_id) {
       return NextResponse.json(
         { error: 'game_id and player_id are required' },
@@ -46,10 +48,15 @@ export async function POST(request: Request) {
       }
     );
   } catch (error) {
-    console.error('Error making move:', error);
+    console.error('[API] Error making move:', error);
     return NextResponse.json(
-      { error: 'Failed to make move' },
+      { 
+        error: 'Failed to make move',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
       { status: 500 }
     );
   }
 }
+
+export const dynamic = 'force-dynamic';

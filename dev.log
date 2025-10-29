@@ -1,0 +1,127 @@
+
+> tic-tac-toe-gomoku@1.0.0 dev
+> next dev
+
+  ▲ Next.js 14.2.0
+  - Local:        http://localhost:3000
+
+ ✓ Starting...
+ ✓ Ready in 1792ms
+ ○ Compiling /api ...
+ ✓ Compiled /api in 557ms (53 modules)
+ GET /api 200 in 647ms
+ ✓ Compiled /api/game/create in 129ms (55 modules)
+[API] Create game request: { mode: 'classic3', player_name: 'Test', is_ai_opponent: undefined }
+[API] Game created: {
+  gameId: 'J0Z7NF',
+  playerId: '1761781104664_oynxli5dhm',
+  mode: 'classic3'
+}
+ POST /api/game/create 201 in 194ms
+ ✓ Compiled /api/game/join in 70ms (57 modules)
+[API] Join game request: { invite_code: 'J0Z7NF', player_name: 'Test2' }
+[API] Player joined game: {
+  gameId: 'J0Z7NF',
+  playerId: '1761781110661_2y4qozu9sdm',
+  invite_code: 'J0Z7NF'
+}
+ POST /api/game/join 200 in 116ms
+ ✓ Compiled /api/game/state in 56ms (59 modules)
+[API] Get game state: { gameId: 'J0Z7NF' }
+ GET /api/game/state?game_id=J0Z7NF 200 in 97ms
+ ✓ Compiled /api/game/move in 112ms (61 modules)
+[API] Make move: {
+  game_id: 'J0Z7NF',
+  player_id: 'player1',
+  column_index: 0,
+  row_index: 0
+}
+ POST /api/game/move 200 in 163ms
+ ✓ Compiled /api/chat/send in 73ms (63 modules)
+[API] Send message: { game_id: 'J0Z7NF', player_id: 'player1', text: 'Hello!' }
+ POST /api/chat/send 200 in 117ms
+ ✓ Compiled /api/chat/list in 113ms (65 modules)
+[API] List messages: { gameId: 'J0Z7NF', since: null }
+ GET /api/chat/list?game_id=J0Z7NF 200 in 153ms
+ GET /api 200 in 10ms
+[API] Create game request: {
+  mode: 'classic3',
+  player_name: 'TestPlayer',
+  is_ai_opponent: undefined
+}
+[API] Game created: {
+  gameId: 'OKUGWN',
+  playerId: '1761781185665_vl9d6ydrsg',
+  mode: 'classic3'
+}
+ POST /api/game/create 201 in 12ms
+[API] Join game request: { invite_code: 'ABC123', player_name: 'TestPlayer2' }
+[API] Player joined game: {
+  gameId: 'ABC123',
+  playerId: '1761781185689_cqo17vcoi8j',
+  invite_code: 'ABC123'
+}
+ POST /api/game/join 200 in 9ms
+[API] Get game state: { gameId: 'test123' }
+ GET /api/game/state?game_id=test123 200 in 7ms
+[API] Make move: {
+  game_id: 'test123',
+  player_id: 'player1',
+  column_index: 0,
+  row_index: 0
+}
+ POST /api/game/move 200 in 7ms
+[API] Send message: { game_id: 'test123', player_id: 'player1', text: 'Test message' }
+ POST /api/chat/send 200 in 7ms
+[API] List messages: { gameId: 'test123', since: null }
+ GET /api/chat/list?game_id=test123 200 in 6ms
+[API] Create game request: { mode: 'invalid', player_name: 'Test', is_ai_opponent: undefined }
+ POST /api/game/create 400 in 10ms
+[API] Create game request: { mode: 'classic3', player_name: undefined, is_ai_opponent: undefined }
+ POST /api/game/create 400 in 6ms
+[API] Join game request: { invite_code: 'ABC', player_name: 'Test' }
+ POST /api/game/join 400 in 9ms
+[API] Create game request: {
+  mode: 'gomoku',
+  player_name: 'GomokuPlayer',
+  is_ai_opponent: undefined
+}
+[API] Game created: {
+  gameId: 'XYFPP5',
+  playerId: '1761781248716_uyfzhypm7vq',
+  mode: 'gomoku'
+}
+ POST /api/game/create 201 in 7ms
+ GET /api 200 in 7ms
+[API] Create game request: {
+  mode: 'classic3',
+  player_name: 'TestPlayer',
+  is_ai_opponent: undefined
+}
+[API] Game created: {
+  gameId: '6D32A7',
+  playerId: '1761781294157_r7ymoana11',
+  mode: 'classic3'
+}
+ POST /api/game/create 201 in 6ms
+[API] Join game request: { invite_code: 'ABC123', player_name: 'TestPlayer2' }
+[API] Player joined game: {
+  gameId: 'ABC123',
+  playerId: '1761781294176_h7xq1opcwi8',
+  invite_code: 'ABC123'
+}
+ POST /api/game/join 200 in 6ms
+[API] Get game state: { gameId: 'test123' }
+ GET /api/game/state?game_id=test123 200 in 5ms
+[API] Make move: {
+  game_id: 'test123',
+  player_id: 'player1',
+  column_index: 0,
+  row_index: 0
+}
+ POST /api/game/move 200 in 5ms
+[API] Send message: { game_id: 'test123', player_id: 'player1', text: 'Test message' }
+ POST /api/chat/send 200 in 5ms
+[API] List messages: { gameId: 'test123', since: null }
+ GET /api/chat/list?game_id=test123 200 in 5ms
+[?25h
