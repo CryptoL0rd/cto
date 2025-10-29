@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from datetime import datetime
+from mangum import Mangum
 
 from api._shared.db import get_db
 from api._shared.models import SendChatMessageRequest, ChatMessageResponse
@@ -70,4 +71,4 @@ async def send_chat_message(request: SendChatMessageRequest):
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 
-handler = app
+handler = Mangum(app, lifespan="off")

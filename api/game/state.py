@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from mangum import Mangum
 
 from api._shared.db import get_db
 from api._shared.game_service import get_game_state
@@ -100,4 +101,4 @@ async def get_game_state_endpoint(game_id: str = Query(..., description="Game ID
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 
-handler = app
+handler = Mangum(app, lifespan="off")

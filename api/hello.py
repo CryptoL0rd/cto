@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
+from mangum import Mangum
 
 app = FastAPI()
 
@@ -8,4 +9,4 @@ async def hello():
     return JSONResponse(content={"message": "Hello from FastAPI!"})
 
 
-handler = app
+handler = Mangum(app, lifespan="off")

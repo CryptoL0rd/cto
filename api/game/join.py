@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
+from mangum import Mangum
 
 from api._shared.db import get_db
 from api._shared.game_service import join_game
@@ -75,4 +76,4 @@ async def join_game_endpoint(request: JoinGameRequest):
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 
-handler = app
+handler = Mangum(app, lifespan="off")
