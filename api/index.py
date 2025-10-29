@@ -17,3 +17,6 @@ app.add_middleware(
 async def api_root():
     """Root API endpoint returning version information."""
     return JSONResponse(content={"ok": True, "version": "1.0.0"})
+
+
+handler = app
