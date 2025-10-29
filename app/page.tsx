@@ -21,11 +21,16 @@ export default function Home() {
     setLoading(true);
     setError('');
     
+    console.log('[CREATE GAME] Starting with mode:', mode);
+    
     try {
       // Generate a random player name
       const playerName = `Игрок-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
       
-      const response = await fetch('/api/game/create', {
+      const url = '/api/game/create';
+      console.log('[CREATE GAME] Fetching:', url);
+      
+      const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -35,16 +40,28 @@ export default function Home() {
         }),
       });
 
-      if (!response.ok) throw new Error('Failed to create game');
+      console.log('[CREATE GAME] Response status:', response.status);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('[CREATE GAME] Error response:', errorText);
+        throw new Error('Failed to create game');
+      }
 
       const data = await response.json();
+      console.log('[CREATE GAME] Success:', data);
       
       if (data.player_id) {
         localStorage.setItem('player_id', data.player_id);
       }
       
+      if (data.invite_code) {
+        localStorage.setItem(`invite_code_${data.game.id}`, data.invite_code);
+      }
+      
       router.push(`/game/${data.game.id}`);
     } catch (err) {
+      console.error('[CREATE GAME] Exception:', err);
       setError('Не удалось создать игру. Попробуйте снова.');
       setLoading(false);
     }
@@ -59,11 +76,16 @@ export default function Home() {
     setLoading(true);
     setError('');
 
+    console.log('[JOIN GAME] Starting with code:', inviteCode);
+
     try {
       // Generate a random player name
       const playerName = `Игрок-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
       
-      const response = await fetch('/api/game/join', {
+      const url = '/api/game/join';
+      console.log('[JOIN GAME] Fetching:', url);
+      
+      const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -72,16 +94,22 @@ export default function Home() {
         }),
       });
 
+      console.log('[JOIN GAME] Response status:', response.status);
+
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error('[JOIN GAME] Error response:', errorText);
         if (response.status === 404) throw new Error('Игра не найдена');
         if (response.status === 409) throw new Error('Игра уже заполнена');
         throw new Error('Failed to join game');
       }
 
       const data = await response.json();
+      console.log('[JOIN GAME] Success:', data);
       localStorage.setItem('player_id', data.player.id);
       router.push(`/game/${data.game_id}`);
     } catch (err) {
+      console.error('[JOIN GAME] Exception:', err);
       setError(err instanceof Error ? err.message : 'Не удалось подключиться');
       setLoading(false);
     }
