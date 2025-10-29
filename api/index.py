@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from mangum import Mangum
 
 app = FastAPI(title="Game API", version="1.0.0")
 
@@ -19,4 +20,4 @@ async def api_root():
     return JSONResponse(content={"ok": True, "version": "1.0.0"})
 
 
-handler = app
+handler = Mangum(app, lifespan="off")
