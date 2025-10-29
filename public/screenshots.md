@@ -1,0 +1,1 @@
+# Screenshots\n\nAdd game screenshots here for the README.\n\nRecommended screenshots:\n- Home page with game mode selection\n- Classic 3×3 game in progress\n- Gomoku board with panning\n- Chat interface\n- Win/draw states\n- Mobile responsive views
