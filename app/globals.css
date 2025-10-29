@@ -196,4 +196,42 @@ body {
   .animate-float {
     animation: float 3s ease-in-out infinite;
   }
+
+  .animate-scale-fade {
+    animation: scale-fade 0.5s ease-out;
+  }
+
+  .animate-draw-line {
+    animation: draw-line 0.6s ease-out forwards;
+  }
+}
+
+@keyframes scale-fade {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes draw-line {
+  0% {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
 }

@@ -281,3 +281,73 @@ export function isPlayerTurn(
   const player = players.find((p) => p.id === playerId);
   return player?.player_number === currentTurn;
 }
+
+// Type for winning line positions
+export type WinningLineType = 
+  | "row-0" | "row-1" | "row-2"
+  | "col-0" | "col-1" | "col-2"
+  | "diag-main" | "diag-anti";
+
+export interface WinningLine {
+  type: WinningLineType;
+  positions: [number, number][];
+}
+
+// Get the winning line for Classic 3x3 if there is one
+export function getWinningLineClassic3(board: GameBoard): WinningLine | null {
+  const { cells } = board;
+
+  // Check rows
+  for (let row = 0; row < 3; row++) {
+    if (
+      cells[row][0].symbol &&
+      cells[row][0].symbol === cells[row][1].symbol &&
+      cells[row][1].symbol === cells[row][2].symbol
+    ) {
+      return {
+        type: `row-${row}` as WinningLineType,
+        positions: [[row, 0], [row, 1], [row, 2]],
+      };
+    }
+  }
+
+  // Check columns
+  for (let col = 0; col < 3; col++) {
+    if (
+      cells[0][col].symbol &&
+      cells[0][col].symbol === cells[1][col].symbol &&
+      cells[1][col].symbol === cells[2][col].symbol
+    ) {
+      return {
+        type: `col-${col}` as WinningLineType,
+        positions: [[0, col], [1, col], [2, col]],
+      };
+    }
+  }
+
+  // Check main diagonal (top-left to bottom-right)
+  if (
+    cells[0][0].symbol &&
+    cells[0][0].symbol === cells[1][1].symbol &&
+    cells[1][1].symbol === cells[2][2].symbol
+  ) {
+    return {
+      type: "diag-main",
+      positions: [[0, 0], [1, 1], [2, 2]],
+    };
+  }
+
+  // Check anti-diagonal (top-right to bottom-left)
+  if (
+    cells[0][2].symbol &&
+    cells[0][2].symbol === cells[1][1].symbol &&
+    cells[1][1].symbol === cells[2][0].symbol
+  ) {
+    return {
+      type: "diag-anti",
+      positions: [[0, 2], [1, 1], [2, 0]],
+    };
+  }
+
+  return null;
+}
