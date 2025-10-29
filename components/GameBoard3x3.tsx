@@ -242,7 +242,7 @@ export default function GameBoard3x3({
       <div className="text-center">
         {isDraw && (
           <div className="text-2xl font-bold text-galaxy-400 drop-shadow-glow-galaxy">
-            It's a Draw! 🤝
+            It&apos;s a Draw! 🤝
           </div>
         )}
         {isGameFinished && !isDraw && gameState.game.winner_id && (
@@ -284,13 +284,7 @@ function WinningLineSVG({ winningLine }: WinningLineSVGProps) {
 
   // Calculate line coordinates based on type
   const getLineCoordinates = () => {
-    const padding = 16; // p-4 in pixels
-    const gap = 8; // gap-2 in pixels
-    const cellSize = `calc((100% - ${padding * 2}px - ${gap * 2}px) / 3)`;
-
     // For simplicity, use percentages
-    const cellPercent = 33.33;
-    const cellCenter = cellPercent / 2;
     const paddingPercent = 4; // approximate
 
     switch (type) {

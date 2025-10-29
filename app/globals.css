@@ -204,6 +204,10 @@ body {
   .animate-draw-line {
     animation: draw-line 0.6s ease-out forwards;
   }
+
+  .animate-pulse-subtle {
+    animation: pulse-subtle 2s ease-in-out infinite;
+  }
 }
 
 @keyframes scale-fade {
@@ -233,5 +237,17 @@ body {
     stroke-dasharray: 1000;
     stroke-dashoffset: 0;
     opacity: 1;
+  }
+}
+
+@keyframes pulse-subtle {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.02);
   }
 }
