@@ -64,8 +64,8 @@ def seed_data(conn: sqlite3.Connection) -> None:
     # Create a sample game
     game_id = str(uuid.uuid4())
     conn.execute(
-        "INSERT INTO games (id, status, created_at) VALUES (?, ?, ?)",
-        (game_id, "waiting", now)
+        "INSERT INTO games (id, mode, status, created_at) VALUES (?, ?, ?, ?)",
+        (game_id, "classic3", "waiting", now)
     )
     
     # Create a sample player
