@@ -75,6 +75,13 @@ class ChatMessageRequest(BaseModel):
     content: str = Field(..., min_length=1, max_length=500)
 
 
+class SendChatMessageRequest(BaseModel):
+    """Request to send a chat message via API."""
+    game_id: str
+    player_id: str
+    text: str = Field(..., min_length=1, max_length=500)
+
+
 class ChatMessageResponse(BaseModel):
     """Response containing chat message information."""
     id: int
