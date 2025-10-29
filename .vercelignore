@@ -1,0 +1,71 @@
+# Python virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+
+# Development databases
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Documentation (keep summary docs for reference, but exclude test files)
+**/README.md
+**/__tests__/
+*.test.ts
+*.test.tsx
+*.test.py
+
+# Build artifacts (Next.js builds are handled by Vercel)
+.next/
+out/
+build/
+dist/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Dependencies (will be installed during build)
+node_modules/
+
+# Environment files (use Vercel environment variables instead)
+.env
+.env.local
+.env*.local
+
+# Git
+.git/
+.gitignore
+
+# Misc
+*.md.backup
+verification_*.py
+verify_*.py
+test_*.py

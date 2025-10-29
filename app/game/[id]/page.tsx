@@ -76,7 +76,9 @@ export default function GamePage() {
   const isCompleted = game.status === "completed";
   const isAbandoned = game.status === "abandoned";
 
-  const currentPlayer = players.find((p) => p.player_number === game.current_turn);
+  const currentPlayer = players.find(
+    (p) => p.player_number === game.current_turn
+  );
   const opponentPlayer = players.find((p) => p.id !== playerId);
   const isMyTurn = currentPlayer?.id === playerId;
 
@@ -165,7 +167,9 @@ export default function GamePage() {
               </button>
               <div>
                 <h1 className="text-xl font-bold text-slate-200">
-                  {game.mode === "classic3" ? "Classic 3×3" : "Gomoku 5-in-a-row"}
+                  {game.mode === "classic3"
+                    ? "Classic 3×3"
+                    : "Gomoku 5-in-a-row"}
                 </h1>
                 <p className={cn("text-sm font-semibold", status.color)}>
                   {status.icon} {status.text}
