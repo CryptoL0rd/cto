@@ -1,0 +1,8 @@
+:root {
+  --color-surface: hsl(220, 25%, 97%);
+  --color-surface-dark: hsl(222, 47%, 11%);
+  --color-border: hsl(216, 12%, 88%);
+  --color-border-dark: hsl(215, 20%, 35%);
+  --color-accent: hsl(259, 94%, 64%);
+  --color-accent-dark: hsl(265, 89%, 78%);
+}
