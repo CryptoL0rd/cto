@@ -15,9 +15,9 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Cosmic UI - Next Generation Interface",
+  title: "Cosmic Tic-Tac-Toe",
   description:
-    "Experience the future with our cosmic-themed user interface featuring stunning visual effects and modern design patterns.",
+    "Challenge your friends in classic 3×3 or Gomoku 5-in-a-row. Experience the cosmic battlefield with stunning visuals and modern gameplay.",
 };
 
 export default function RootLayout({
