@@ -9,7 +9,10 @@ export interface ButtonProps
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = "primary", size = "md", children, ...props }, ref) => {
+  (
+    { className, variant = "primary", size = "md", children, ...props },
+    ref
+  ) => {
     const baseStyles =
       "inline-flex items-center justify-center rounded-lg font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 disabled:opacity-50 disabled:cursor-not-allowed";
 
@@ -28,7 +31,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       lg: "px-8 py-4 text-lg",
     };
 
-    const glowEffect = variant !== "outline" ? "hover:scale-105 shadow-lg hover:shadow-xl" : "hover:scale-105";
+    const glowEffect =
+      variant !== "outline"
+        ? "hover:scale-105 shadow-lg hover:shadow-xl"
+        : "hover:scale-105";
 
     return (
       <button
