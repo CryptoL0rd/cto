@@ -1,11 +1,11 @@
 // Example usage of React hooks for game and chat functionality
 // This demonstrates how to use the hooks in a React component
 
-"use client";
+'use client';
 
-import { useGameState, useChat, useLocalPlayer } from "../hooks";
-import { createGame, joinGame, makeMove, sendMessage } from "../api";
-import { buildBoard, validateMove, isPlayerTurn } from "../game-logic";
+import { useGameState, useChat, useLocalPlayer } from '../hooks';
+import { createGame, joinGame, makeMove, sendMessage } from '../api';
+import { buildBoard, validateMove, isPlayerTurn } from '../game-logic';
 
 // Example: Game component using useGameState hook
 export function GameComponent({ gameId }: { gameId: string }) {
@@ -26,9 +26,7 @@ export function GameComponent({ gameId }: { gameId: string }) {
 
   const { game, players, moves } = gameState;
   const board = buildBoard(game.mode, moves, players);
-  const isMyTurn = playerId
-    ? isPlayerTurn(playerId, game.current_turn, players)
-    : false;
+  const isMyTurn = playerId ? isPlayerTurn(playerId, game.current_turn, players) : false;
 
   const handleCellClick = async (row: number, column: number) => {
     if (!playerId || !isMyTurn) return;
@@ -48,7 +46,7 @@ export function GameComponent({ gameId }: { gameId: string }) {
       });
       refetch(); // Refresh game state immediately
     } catch (error) {
-      console.error("Failed to make move:", error);
+      console.error('Failed to make move:', error);
     }
   };
 
@@ -69,7 +67,7 @@ export function GameComponent({ gameId }: { gameId: string }) {
                 onClick={() => handleCellClick(rowIndex, colIndex)}
                 disabled={!isMyTurn || cell.symbol !== null}
               >
-                {cell.symbol || "·"}
+                {cell.symbol || '·'}
               </button>
             ))}
           </div>
@@ -95,7 +93,7 @@ export function ChatComponent({ gameId }: { gameId: string }) {
       });
       // Messages will be updated automatically by the polling hook
     } catch (error) {
-      console.error("Failed to send message:", error);
+      console.error('Failed to send message:', error);
     }
   };
 
@@ -117,11 +115,9 @@ export function ChatComponent({ gameId }: { gameId: string }) {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          const input = e.currentTarget.elements.namedItem(
-            "message"
-          ) as HTMLInputElement;
+          const input = e.currentTarget.elements.namedItem('message') as HTMLInputElement;
           handleSendMessage(input.value);
-          input.value = "";
+          input.value = '';
         }}
       >
         <input name="message" type="text" placeholder="Type a message..." />
@@ -138,8 +134,8 @@ export function CreateGameComponent() {
   const handleCreateGame = async () => {
     try {
       const response = await createGame({
-        player_name: "Player 1",
-        mode: "classic3",
+        player_name: 'Player 1',
+        mode: 'classic3',
         is_ai_opponent: false,
       });
 
@@ -147,10 +143,10 @@ export function CreateGameComponent() {
       savePlayerId(response.player_id);
 
       // Navigate to game (example - would use Next.js router in real app)
-      console.log("Game created:", response.invite_code);
-      console.log("Player ID:", response.player_id);
+      console.log('Game created:', response.invite_code);
+      console.log('Player ID:', response.player_id);
     } catch (error) {
-      console.error("Failed to create game:", error);
+      console.error('Failed to create game:', error);
     }
   };
 
@@ -170,17 +166,17 @@ export function JoinGameComponent({ inviteCode }: { inviteCode: string }) {
     try {
       const response = await joinGame({
         invite_code: inviteCode,
-        player_name: "Player 2",
+        player_name: 'Player 2',
       });
 
       // Save player ID to localStorage
       savePlayerId(response.player.id);
 
       // Navigate to game
-      console.log("Joined game:", response.game_id);
-      console.log("Player ID:", response.player.id);
+      console.log('Joined game:', response.game_id);
+      console.log('Player ID:', response.player.id);
     } catch (error) {
-      console.error("Failed to join game:", error);
+      console.error('Failed to join game:', error);
     }
   };
 
@@ -205,9 +201,7 @@ export function PlayerInfo() {
     return (
       <div>
         <p>No player ID found</p>
-        <button onClick={() => savePlayerId("test-player-id")}>
-          Set Test Player ID
-        </button>
+        <button onClick={() => savePlayerId('test-player-id')}>Set Test Player ID</button>
       </div>
     );
   }

@@ -192,11 +192,7 @@ const { playerId } = useLocalPlayer();
 ### Component Usage
 
 ```tsx
-<GameBoardGomoku
-  gameState={gameState}
-  playerId={playerId}
-  onMoveComplete={refetch}
-/>
+<GameBoardGomoku gameState={gameState} playerId={playerId} onMoveComplete={refetch} />
 ```
 
 ## Acceptance Criteria Status

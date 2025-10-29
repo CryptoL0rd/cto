@@ -134,32 +134,32 @@ Client-side game logic utilities:
 ### Creating a Game
 
 ```typescript
-import { createGame } from "@/lib/api";
-import { useLocalPlayer } from "@/lib/hooks";
+import { createGame } from '@/lib/api';
+import { useLocalPlayer } from '@/lib/hooks';
 
 const { savePlayerId } = useLocalPlayer();
 
 const response = await createGame({
-  player_name: "Alice",
-  mode: "classic3",
+  player_name: 'Alice',
+  mode: 'classic3',
   is_ai_opponent: false,
 });
 
 savePlayerId(response.player_id);
-console.log("Invite code:", response.invite_code);
+console.log('Invite code:', response.invite_code);
 ```
 
 ### Joining a Game
 
 ```typescript
-import { joinGame } from "@/lib/api";
-import { useLocalPlayer } from "@/lib/hooks";
+import { joinGame } from '@/lib/api';
+import { useLocalPlayer } from '@/lib/hooks';
 
 const { savePlayerId } = useLocalPlayer();
 
 const response = await joinGame({
-  invite_code: "ABC123",
-  player_name: "Bob",
+  invite_code: 'ABC123',
+  player_name: 'Bob',
 });
 
 savePlayerId(response.player.id);
@@ -194,8 +194,8 @@ function GameBoard({ gameId }: { gameId: string }) {
 ### Making a Move
 
 ```typescript
-import { makeMove } from "@/lib/api";
-import { validateMove } from "@/lib/game-logic";
+import { makeMove } from '@/lib/api';
+import { validateMove } from '@/lib/game-logic';
 
 const handleMove = async (row: number, column: number) => {
   const validation = validateMove(board, row, column);

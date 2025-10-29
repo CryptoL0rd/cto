@@ -26,10 +26,10 @@ This document summarizes the implementation of TypeScript types, API client func
 **Game & Core Types:**
 
 ```typescript
-type GameMode = "classic3" | "gomoku";
-type GameStatus = "waiting" | "active" | "completed" | "abandoned";
-type Symbol = "X" | "O" | null;
-type MessageType = "chat" | "system";
+type GameMode = 'classic3' | 'gomoku';
+type GameStatus = 'waiting' | 'active' | 'completed' | 'abandoned';
+type Symbol = 'X' | 'O' | null;
+type MessageType = 'chat' | 'system';
 ```
 
 **Main Interfaces:**
@@ -276,14 +276,14 @@ Demonstrates real-world usage:
 ### Full Game Flow
 
 ```typescript
-import { createGame, joinGame, makeMove } from "@/lib/api";
-import { useGameState, useChat, useLocalPlayer } from "@/lib/hooks";
-import { buildBoard, validateMove, isPlayerTurn } from "@/lib/game-logic";
+import { createGame, joinGame, makeMove } from '@/lib/api';
+import { useGameState, useChat, useLocalPlayer } from '@/lib/hooks';
+import { buildBoard, validateMove, isPlayerTurn } from '@/lib/game-logic';
 
 // 1. Create game
 const { player_id, invite_code } = await createGame({
-  player_name: "Alice",
-  mode: "classic3",
+  player_name: 'Alice',
+  mode: 'classic3',
 });
 
 // 2. Save player ID
@@ -293,11 +293,7 @@ savePlayerId(player_id);
 const { gameState } = useGameState(invite_code);
 
 // 4. Build board from state
-const board = buildBoard(
-  gameState.game.mode,
-  gameState.moves,
-  gameState.players
-);
+const board = buildBoard(gameState.game.mode, gameState.moves, gameState.players);
 
 // 5. Validate and make move
 const validation = validateMove(board, row, col);
@@ -315,7 +311,7 @@ const { messages } = useChat(invite_code);
 await sendMessage({
   game_id: invite_code,
   player_id,
-  text: "Good game!",
+  text: 'Good game!',
 });
 ```
 

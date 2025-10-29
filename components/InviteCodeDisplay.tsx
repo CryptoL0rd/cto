@@ -1,18 +1,15 @@
-import React, { useState } from "react";
-import { cn } from "@/lib/utils";
-import Button from "@/components/ui/Button";
-import Card from "@/components/ui/Card";
-import { useToast } from "@/components/ui/Toast";
+import React, { useState } from 'react';
+import { cn } from '@/lib/utils';
+import Button from '@/components/ui/Button';
+import Card from '@/components/ui/Card';
+import { useToast } from '@/components/ui/Toast';
 
 export interface InviteCodeDisplayProps {
   code: string;
   className?: string;
 }
 
-export default function InviteCodeDisplay({
-  code,
-  className,
-}: InviteCodeDisplayProps) {
+export default function InviteCodeDisplay({ code, className }: InviteCodeDisplayProps) {
   const { showToast } = useToast();
   const [copied, setCopied] = useState(false);
 
@@ -21,40 +18,36 @@ export default function InviteCodeDisplay({
       if (navigator.clipboard && window.isSecureContext) {
         await navigator.clipboard.writeText(code);
       } else {
-        const textArea = document.createElement("textarea");
+        const textArea = document.createElement('textarea');
         textArea.value = code;
-        textArea.style.position = "fixed";
-        textArea.style.left = "-999999px";
-        textArea.style.top = "-999999px";
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
         document.body.appendChild(textArea);
         textArea.focus();
         textArea.select();
-        document.execCommand("copy");
+        document.execCommand('copy');
         textArea.remove();
       }
 
       setCopied(true);
-      showToast("Invite code copied to clipboard!", "success");
+      showToast('Invite code copied to clipboard!', 'success');
 
       setTimeout(() => {
         setCopied(false);
       }, 2000);
     } catch (error) {
-      console.error("Failed to copy:", error);
-      showToast("Failed to copy invite code", "error");
+      console.error('Failed to copy:', error);
+      showToast('Failed to copy invite code', 'error');
     }
   };
 
   return (
-    <Card className={cn("max-w-md", className)}>
+    <Card className={cn('max-w-md', className)}>
       <div className="space-y-4">
         <div>
-          <h3 className="text-lg font-semibold text-slate-200 mb-2">
-            Your Invite Code
-          </h3>
-          <p className="text-sm text-slate-400">
-            Share this code with others to invite them
-          </p>
+          <h3 className="text-lg font-semibold text-slate-200 mb-2">Your Invite Code</h3>
+          <p className="text-sm text-slate-400">Share this code with others to invite them</p>
         </div>
 
         <div className="relative">
@@ -82,11 +75,7 @@ export default function InviteCodeDisplay({
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M5 13l4 4L19 7"
-                  />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
                 Copied!
               </>

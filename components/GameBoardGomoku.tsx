@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useState, useCallback, useMemo, useRef, useEffect } from "react";
-import type { GameStateResponse, Symbol, Move } from "@/lib/types";
-import { isPlayerTurn } from "@/lib/game-logic";
-import { makeMove } from "@/lib/api";
+import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
+import type { GameStateResponse, Symbol, Move } from '@/lib/types';
+import { isPlayerTurn } from '@/lib/game-logic';
+import { makeMove } from '@/lib/api';
 
 interface GameBoardGomokuProps {
   gameState: GameStateResponse;
@@ -55,9 +55,7 @@ export default function GameBoardGomoku({
     centerY: 0,
     cellSize: CELL_SIZE,
   });
-  const [optimisticMove, setOptimisticMove] = useState<OptimisticMove | null>(
-    null
-  );
+  const [optimisticMove, setOptimisticMove] = useState<OptimisticMove | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hoveredCell, setHoveredCell] = useState<{
     row: number;
@@ -65,21 +63,17 @@ export default function GameBoardGomoku({
   } | null>(null);
 
   const isGameFinished =
-    gameState.game.status === "completed" ||
-    gameState.game.status === "abandoned";
+    gameState.game.status === 'completed' || gameState.game.status === 'abandoned';
   const isMyTurn = playerId
     ? isPlayerTurn(playerId, gameState.game.current_turn, gameState.players)
     : false;
   const canInteract = !isGameFinished && isMyTurn && !isSubmitting;
 
   const myPlayerNumber = useMemo(() => {
-    return (
-      gameState.players.find((p) => p.id === playerId)?.player_number || null
-    );
+    return gameState.players.find((p) => p.id === playerId)?.player_number || null;
   }, [gameState.players, playerId]);
 
-  const mySymbol: Symbol =
-    myPlayerNumber === 1 ? "X" : myPlayerNumber === 2 ? "O" : null;
+  const mySymbol: Symbol = myPlayerNumber === 1 ? 'X' : myPlayerNumber === 2 ? 'O' : null;
 
   const movesMap = useMemo(() => {
     const map = new Map<string, Move>();
@@ -155,10 +149,8 @@ export default function GameBoardGomoku({
       };
     }
 
-    const visibleCols =
-      Math.ceil(canvas.width / viewport.cellSize / 2) + VISIBLE_RANGE;
-    const visibleRows =
-      Math.ceil(canvas.height / viewport.cellSize / 2) + VISIBLE_RANGE;
+    const visibleCols = Math.ceil(canvas.width / viewport.cellSize / 2) + VISIBLE_RANGE;
+    const visibleRows = Math.ceil(canvas.height / viewport.cellSize / 2) + VISIBLE_RANGE;
 
     return {
       minRow: Math.floor(viewport.centerY - visibleRows),
@@ -172,7 +164,7 @@ export default function GameBoardGomoku({
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
     const rect = canvas.getBoundingClientRect();
@@ -188,7 +180,7 @@ export default function GameBoardGomoku({
 
     const bounds = getVisibleBounds();
 
-    ctx.strokeStyle = "rgba(71, 85, 105, 0.3)";
+    ctx.strokeStyle = 'rgba(71, 85, 105, 0.3)';
     ctx.lineWidth = 1;
 
     for (let row = bounds.minRow; row <= bounds.maxRow; row++) {
@@ -211,15 +203,12 @@ export default function GameBoardGomoku({
       }
     }
 
-    ctx.font = "10px monospace";
-    ctx.fillStyle = "rgba(148, 163, 184, 0.6)";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
+    ctx.font = '10px monospace';
+    ctx.fillStyle = 'rgba(148, 163, 184, 0.6)';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
 
-    const labelStep = Math.max(
-      1,
-      Math.floor(10 / (viewport.cellSize / CELL_SIZE))
-    );
+    const labelStep = Math.max(1, Math.floor(10 / (viewport.cellSize / CELL_SIZE)));
     for (let row = bounds.minRow; row <= bounds.maxRow; row += labelStep) {
       const y = canvasCenterY + (row - viewport.centerY) * viewport.cellSize;
       if (y >= 0 && y <= rect.height) {
@@ -240,11 +229,8 @@ export default function GameBoardGomoku({
       const player = playerMap.get(move.player_id);
       if (!player) return;
 
-      const x =
-        canvasCenterX +
-        (move.column_index - viewport.centerX) * viewport.cellSize;
-      const y =
-        canvasCenterY + (move.row_index - viewport.centerY) * viewport.cellSize;
+      const x = canvasCenterX + (move.column_index - viewport.centerX) * viewport.cellSize;
+      const y = canvasCenterY + (move.row_index - viewport.centerY) * viewport.cellSize;
 
       if (
         x >= -viewport.cellSize &&
@@ -252,25 +238,23 @@ export default function GameBoardGomoku({
         y >= -viewport.cellSize &&
         y <= rect.height + viewport.cellSize
       ) {
-        const symbol = player.player_number === 1 ? "X" : "O";
+        const symbol = player.player_number === 1 ? 'X' : 'O';
         const isLast = lastMove && move.id === lastMove.id;
 
         ctx.save();
 
         if (isLast) {
           ctx.fillStyle =
-            player.player_number === 1
-              ? "rgba(102, 126, 234, 0.3)"
-              : "rgba(244, 63, 94, 0.3)";
+            player.player_number === 1 ? 'rgba(102, 126, 234, 0.3)' : 'rgba(244, 63, 94, 0.3)';
           ctx.beginPath();
           ctx.arc(x, y, viewport.cellSize * 0.4, 0, Math.PI * 2);
           ctx.fill();
         }
 
         ctx.font = `bold ${viewport.cellSize * 0.5}px sans-serif`;
-        ctx.fillStyle = player.player_number === 1 ? "#667eea" : "#f43f5e";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
+        ctx.fillStyle = player.player_number === 1 ? '#667eea' : '#f43f5e';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
         ctx.fillText(symbol, x, y);
 
         ctx.restore();
@@ -278,30 +262,22 @@ export default function GameBoardGomoku({
     });
 
     if (optimisticMove && !isSubmitting) {
-      const x =
-        canvasCenterX +
-        (optimisticMove.col - viewport.centerX) * viewport.cellSize;
-      const y =
-        canvasCenterY +
-        (optimisticMove.row - viewport.centerY) * viewport.cellSize;
+      const x = canvasCenterX + (optimisticMove.col - viewport.centerX) * viewport.cellSize;
+      const y = canvasCenterY + (optimisticMove.row - viewport.centerY) * viewport.cellSize;
 
       ctx.save();
       ctx.globalAlpha = 0.5;
       ctx.font = `bold ${viewport.cellSize * 0.5}px sans-serif`;
-      ctx.fillStyle = myPlayerNumber === 1 ? "#667eea" : "#f43f5e";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText(optimisticMove.symbol || "", x, y);
+      ctx.fillStyle = myPlayerNumber === 1 ? '#667eea' : '#f43f5e';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(optimisticMove.symbol || '', x, y);
       ctx.restore();
     }
 
     if (hoveredCell && canInteract) {
-      const x =
-        canvasCenterX +
-        (hoveredCell.col - viewport.centerX) * viewport.cellSize;
-      const y =
-        canvasCenterY +
-        (hoveredCell.row - viewport.centerY) * viewport.cellSize;
+      const x = canvasCenterX + (hoveredCell.col - viewport.centerX) * viewport.cellSize;
+      const y = canvasCenterY + (hoveredCell.row - viewport.centerY) * viewport.cellSize;
 
       const key = `${hoveredCell.row},${hoveredCell.col}`;
       if (
@@ -311,17 +287,17 @@ export default function GameBoardGomoku({
           optimisticMove.col !== hoveredCell.col)
       ) {
         ctx.save();
-        ctx.fillStyle = "rgba(102, 126, 234, 0.15)";
+        ctx.fillStyle = 'rgba(102, 126, 234, 0.15)';
         ctx.beginPath();
         ctx.arc(x, y, viewport.cellSize * 0.35, 0, Math.PI * 2);
         ctx.fill();
 
         ctx.globalAlpha = 0.3;
         ctx.font = `bold ${viewport.cellSize * 0.4}px sans-serif`;
-        ctx.fillStyle = myPlayerNumber === 1 ? "#667eea" : "#f43f5e";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(mySymbol || "", x, y);
+        ctx.fillStyle = myPlayerNumber === 1 ? '#667eea' : '#f43f5e';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(mySymbol || '', x, y);
         ctx.restore();
       }
     }
@@ -348,25 +324,22 @@ export default function GameBoardGomoku({
       drawBoard();
     };
 
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, [drawBoard]);
 
-  const handleMouseDown = useCallback(
-    (e: React.MouseEvent<HTMLCanvasElement>) => {
-      const rect = canvasRef.current?.getBoundingClientRect();
-      if (!rect) return;
+  const handleMouseDown = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
+    const rect = canvasRef.current?.getBoundingClientRect();
+    if (!rect) return;
 
-      dragStateRef.current = {
-        isDragging: true,
-        startX: e.clientX - rect.left,
-        startY: e.clientY - rect.top,
-        lastX: e.clientX - rect.left,
-        lastY: e.clientY - rect.top,
-      };
-    },
-    []
-  );
+    dragStateRef.current = {
+      isDragging: true,
+      startX: e.clientX - rect.left,
+      startY: e.clientY - rect.top,
+      lastX: e.clientX - rect.left,
+      lastY: e.clientY - rect.top,
+    };
+  }, []);
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -451,78 +424,64 @@ export default function GameBoardGomoku({
         setOptimisticMove(null);
         onMoveComplete?.();
       } catch (error) {
-        console.error("Failed to make move:", error);
+        console.error('Failed to make move:', error);
         setOptimisticMove(null);
-        alert(error instanceof Error ? error.message : "Failed to make move");
+        alert(error instanceof Error ? error.message : 'Failed to make move');
       } finally {
         setIsSubmitting(false);
       }
     },
-    [
-      playerId,
-      mySymbol,
-      canInteract,
-      screenToBoard,
-      movesMap,
-      gameState.game.id,
-      onMoveComplete,
-    ]
+    [playerId, mySymbol, canInteract, screenToBoard, movesMap, gameState.game.id, onMoveComplete]
   );
 
-  const handleTouchStart = useCallback(
-    (e: React.TouchEvent<HTMLCanvasElement>) => {
-      if (e.touches.length !== 1) return;
-      e.preventDefault();
+  const handleTouchStart = useCallback((e: React.TouchEvent<HTMLCanvasElement>) => {
+    if (e.touches.length !== 1) return;
+    e.preventDefault();
 
-      const rect = canvasRef.current?.getBoundingClientRect();
-      if (!rect) return;
+    const rect = canvasRef.current?.getBoundingClientRect();
+    if (!rect) return;
 
-      const touch = e.touches[0];
-      dragStateRef.current = {
-        isDragging: true,
-        startX: touch.clientX - rect.left,
-        startY: touch.clientY - rect.top,
-        lastX: touch.clientX - rect.left,
-        lastY: touch.clientY - rect.top,
-      };
-    },
-    []
-  );
+    const touch = e.touches[0];
+    dragStateRef.current = {
+      isDragging: true,
+      startX: touch.clientX - rect.left,
+      startY: touch.clientY - rect.top,
+      lastX: touch.clientX - rect.left,
+      lastY: touch.clientY - rect.top,
+    };
+  }, []);
 
-  const handleTouchMove = useCallback(
-    (e: React.TouchEvent<HTMLCanvasElement>) => {
-      if (e.touches.length !== 1) return;
-      e.preventDefault();
+  const handleTouchMove = useCallback((e: React.TouchEvent<HTMLCanvasElement>) => {
+    if (e.touches.length !== 1) return;
+    e.preventDefault();
 
-      const rect = canvasRef.current?.getBoundingClientRect();
-      if (!rect) return;
+    const rect = canvasRef.current?.getBoundingClientRect();
+    if (!rect) return;
 
-      const touch = e.touches[0];
-      const touchX = touch.clientX - rect.left;
-      const touchY = touch.clientY - rect.top;
+    const touch = e.touches[0];
+    const touchX = touch.clientX - rect.left;
+    const touchY = touch.clientY - rect.top;
 
-      if (dragStateRef.current.isDragging) {
-        const deltaX = touchX - dragStateRef.current.lastX;
-        const deltaY = touchY - dragStateRef.current.lastY;
+    if (dragStateRef.current.isDragging) {
+      const deltaX = touchX - dragStateRef.current.lastX;
+      const deltaY = touchY - dragStateRef.current.lastY;
 
-        dragStateRef.current.lastX = touchX;
-        dragStateRef.current.lastY = touchY;
+      dragStateRef.current.lastX = touchX;
+      dragStateRef.current.lastY = touchY;
 
-        if (animationFrameRef.current) {
-          cancelAnimationFrame(animationFrameRef.current);
-        }
-
-        animationFrameRef.current = requestAnimationFrame(() => {
-          setViewport((prev) => ({
-            ...prev,
-            centerX: prev.centerX - deltaX / prev.cellSize,
-            centerY: prev.centerY - deltaY / prev.cellSize,
-          }));
-        });
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
       }
-    },
-    []
-  );
+
+      animationFrameRef.current = requestAnimationFrame(() => {
+        setViewport((prev) => ({
+          ...prev,
+          centerX: prev.centerX - deltaX / prev.cellSize,
+          centerY: prev.centerY - deltaY / prev.cellSize,
+        }));
+      });
+    }
+  }, []);
 
   const handleTouchEnd = useCallback(
     async (e: React.TouchEvent<HTMLCanvasElement>) => {
@@ -565,33 +524,21 @@ export default function GameBoardGomoku({
         setOptimisticMove(null);
         onMoveComplete?.();
       } catch (error) {
-        console.error("Failed to make move:", error);
+        console.error('Failed to make move:', error);
         setOptimisticMove(null);
-        alert(error instanceof Error ? error.message : "Failed to make move");
+        alert(error instanceof Error ? error.message : 'Failed to make move');
       } finally {
         setIsSubmitting(false);
       }
     },
-    [
-      playerId,
-      mySymbol,
-      canInteract,
-      screenToBoard,
-      movesMap,
-      gameState.game.id,
-      onMoveComplete,
-    ]
+    [playerId, mySymbol, canInteract, screenToBoard, movesMap, gameState.game.id, onMoveComplete]
   );
 
   const isDraw = isGameFinished && !gameState.game.winner_id;
 
   return (
     <div className="flex flex-col items-center gap-6 w-full">
-      <div
-        ref={containerRef}
-        className="relative w-full"
-        style={{ height: "min(80vh, 600px)" }}
-      >
+      <div ref={containerRef} className="relative w-full" style={{ height: 'min(80vh, 600px)' }}>
         <canvas
           ref={canvasRef}
           className="w-full h-full bg-slate-900/40 backdrop-blur-xl border border-slate-700/50 rounded-xl cursor-move touch-none"
@@ -606,8 +553,7 @@ export default function GameBoardGomoku({
         />
         <div className="absolute top-4 right-4 bg-slate-900/80 backdrop-blur-sm px-3 py-2 rounded-lg border border-slate-700/50 text-sm text-slate-300">
           <div>
-            Center: ({Math.round(viewport.centerX)},{" "}
-            {Math.round(viewport.centerY)})
+            Center: ({Math.round(viewport.centerX)}, {Math.round(viewport.centerY)})
           </div>
           <div>Moves: {gameState.moves.length}</div>
         </div>
@@ -622,13 +568,9 @@ export default function GameBoardGomoku({
         {isGameFinished && !isDraw && gameState.game.winner_id && (
           <div className="text-2xl font-bold">
             {gameState.game.winner_id === playerId ? (
-              <span className="text-cosmic-400 drop-shadow-glow-cosmic">
-                You Won! 🎉
-              </span>
+              <span className="text-cosmic-400 drop-shadow-glow-cosmic">You Won! 🎉</span>
             ) : (
-              <span className="text-nebula-400 drop-shadow-glow-nebula">
-                You Lost 😔
-              </span>
+              <span className="text-nebula-400 drop-shadow-glow-nebula">You Lost 😔</span>
             )}
           </div>
         )}

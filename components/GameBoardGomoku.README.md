@@ -31,7 +31,7 @@ An interactive, pannable Gomoku board component designed for infinite grid gamep
 ## Usage
 
 ```tsx
-import GameBoardGomoku from "@/components/GameBoardGomoku";
+import GameBoardGomoku from '@/components/GameBoardGomoku';
 
 function GomokuGame({ gameId }: { gameId: string }) {
   const { gameState, refetch } = useGameState(gameId);
@@ -39,13 +39,7 @@ function GomokuGame({ gameId }: { gameId: string }) {
 
   if (!gameState) return <div>Loading...</div>;
 
-  return (
-    <GameBoardGomoku
-      gameState={gameState}
-      playerId={playerId}
-      onMoveComplete={refetch}
-    />
-  );
+  return <GameBoardGomoku gameState={gameState} playerId={playerId} onMoveComplete={refetch} />;
 }
 ```
 
