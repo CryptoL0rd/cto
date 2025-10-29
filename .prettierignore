@@ -1,0 +1,12 @@
+node_modules
+.next
+.vercel
+out
+build
+dist
+coverage
+*.lock
+package-lock.json
+*.log
+.husky
+public

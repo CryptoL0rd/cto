@@ -1,0 +1,126 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Cosmic Dark Theme Colors */
+  --background: #05000f;
+  --foreground: #f8f7ff;
+
+  /* Primary - Cosmic Purple */
+  --primary: #8e66ff;
+  --primary-foreground: #0b021f;
+
+  /* Secondary - Deep Space Blue */
+  --secondary: #1b1a4f;
+  --secondary-foreground: #c7d2ff;
+
+  /* Accent - Pulsar Pink */
+  --accent: #ff4ecd;
+  --accent-foreground: #140016;
+
+  /* Muted */
+  --muted: #1f1635;
+  --muted-foreground: #aaa3c3;
+
+  /* Card */
+  --card: #0f0b24;
+  --card-foreground: #f1edff;
+
+  /* Border & Input */
+  --border: #2b2250;
+  --input: #2b2250;
+  --ring: #ad8cff;
+
+  /* Status colors */
+  --destructive: #ff5f6d;
+  --destructive-foreground: #ffffff;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(
+      circle at 20% -20%,
+      rgba(255, 110, 216, 0.25),
+      transparent 55%
+    ),
+    radial-gradient(circle at 80% 0%, rgba(74, 0, 224, 0.35), transparent 60%),
+    radial-gradient(
+      circle at 50% 90%,
+      rgba(56, 19, 194, 0.35),
+      transparent 65%
+    ),
+    var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  background-attachment: fixed;
+}
+
+::selection {
+  background: rgba(142, 102, 255, 0.4);
+  color: var(--foreground);
+}
+
+@layer components {
+  .glass-card {
+    background: linear-gradient(
+      140deg,
+      rgba(20, 12, 44, 0.75) 0%,
+      rgba(14, 9, 30, 0.85) 100%
+    );
+    border: 1px solid rgba(173, 140, 255, 0.25);
+    backdrop-filter: blur(18px);
+    box-shadow: 0 20px 45px rgba(7, 3, 19, 0.55);
+  }
+
+  .cosmic-grid {
+    background-image:
+      linear-gradient(rgba(142, 102, 255, 0.15) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(142, 102, 255, 0.15) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .glow-border {
+    position: relative;
+  }
+
+  .glow-border::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    background: linear-gradient(
+      140deg,
+      rgba(255, 110, 216, 0.45),
+      rgba(74, 0, 224, 0.45)
+    );
+    opacity: 0;
+    transition: opacity 200ms ease;
+    z-index: -1;
+  }
+
+  .glow-border:hover::before,
+  .glow-border:focus-visible::before {
+    opacity: 1;
+  }
+}
+
+@layer utilities {
+  .text-glow-sm {
+    text-shadow: 0 0 12px rgba(142, 102, 255, 0.45);
+  }
+
+  .text-glow-md {
+    text-shadow: 0 0 20px rgba(142, 102, 255, 0.55);
+  }
+
+  .surface-muted {
+    background: rgba(17, 12, 30, 0.75);
+    backdrop-filter: blur(10px);
+  }
+}
