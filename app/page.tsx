@@ -130,7 +130,10 @@ export default function Home() {
           message.includes("does not exist")
         ) {
           errorMessage = "Invalid invite code. Please check and try again.";
-        } else if (message.includes("full") || message.includes("already has")) {
+        } else if (
+          message.includes("full") ||
+          message.includes("already has")
+        ) {
           errorMessage = "This game is full. Please try another invite code.";
         } else if (message.includes("already started")) {
           errorMessage = "This game has already started.";

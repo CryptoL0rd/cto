@@ -293,7 +293,11 @@ savePlayerId(player_id);
 const { gameState } = useGameState(invite_code);
 
 // 4. Build board from state
-const board = buildBoard(gameState.game.mode, gameState.moves, gameState.players);
+const board = buildBoard(
+  gameState.game.mode,
+  gameState.moves,
+  gameState.players
+);
 
 // 5. Validate and make move
 const validation = validateMove(board, row, col);

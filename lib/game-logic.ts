@@ -283,10 +283,15 @@ export function isPlayerTurn(
 }
 
 // Type for winning line positions
-export type WinningLineType = 
-  | "row-0" | "row-1" | "row-2"
-  | "col-0" | "col-1" | "col-2"
-  | "diag-main" | "diag-anti";
+export type WinningLineType =
+  | "row-0"
+  | "row-1"
+  | "row-2"
+  | "col-0"
+  | "col-1"
+  | "col-2"
+  | "diag-main"
+  | "diag-anti";
 
 export interface WinningLine {
   type: WinningLineType;
@@ -306,7 +311,11 @@ export function getWinningLineClassic3(board: GameBoard): WinningLine | null {
     ) {
       return {
         type: `row-${row}` as WinningLineType,
-        positions: [[row, 0], [row, 1], [row, 2]],
+        positions: [
+          [row, 0],
+          [row, 1],
+          [row, 2],
+        ],
       };
     }
   }
@@ -320,7 +329,11 @@ export function getWinningLineClassic3(board: GameBoard): WinningLine | null {
     ) {
       return {
         type: `col-${col}` as WinningLineType,
-        positions: [[0, col], [1, col], [2, col]],
+        positions: [
+          [0, col],
+          [1, col],
+          [2, col],
+        ],
       };
     }
   }
@@ -333,7 +346,11 @@ export function getWinningLineClassic3(board: GameBoard): WinningLine | null {
   ) {
     return {
       type: "diag-main",
-      positions: [[0, 0], [1, 1], [2, 2]],
+      positions: [
+        [0, 0],
+        [1, 1],
+        [2, 2],
+      ],
     };
   }
 
@@ -345,7 +362,11 @@ export function getWinningLineClassic3(board: GameBoard): WinningLine | null {
   ) {
     return {
       type: "diag-anti",
-      positions: [[0, 2], [1, 1], [2, 0]],
+      positions: [
+        [0, 2],
+        [1, 1],
+        [2, 0],
+      ],
     };
   }
 
