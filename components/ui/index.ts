@@ -15,3 +15,12 @@ export {
 export type { CardProps } from "./Card";
 
 export { ToastProvider, useToast } from "./Toast";
+
+export {
+  default as Modal,
+  ModalHeader,
+  ModalTitle,
+  ModalContent,
+  ModalFooter,
+} from "./Modal";
+export type { ModalProps } from "./Modal";
