@@ -58,6 +58,12 @@ venv.bak/
 .dmypy.json
 dmypy.json
 
+# Database
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
 # IDE
 .vscode/
 .idea/
