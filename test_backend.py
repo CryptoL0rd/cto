@@ -205,8 +205,8 @@ class TestDatabaseConnection:
         
         with get_db() as conn:
             conn.execute(
-                "INSERT INTO games (id, status, created_at) VALUES (?, ?, ?)",
-                (game_id, "waiting", now)
+                "INSERT INTO games (id, mode, status, created_at) VALUES (?, ?, ?, ?)",
+                (game_id, "classic3", "waiting", now)
             )
         
         # Verify the data was committed
@@ -225,8 +225,8 @@ class TestDatabaseConnection:
         try:
             with get_db() as conn:
                 conn.execute(
-                    "INSERT INTO games (id, status, created_at) VALUES (?, ?, ?)",
-                    (game_id, "waiting", now)
+                    "INSERT INTO games (id, mode, status, created_at) VALUES (?, ?, ?, ?)",
+                    (game_id, "classic3", "waiting", now)
                 )
                 raise ValueError("Test exception")
         except ValueError:
@@ -342,6 +342,7 @@ class TestPydanticModels:
         """Test GameResponse with valid data."""
         response = GameResponse(
             id="game-123",
+            mode="classic3",
             status="waiting",
             created_at="2024-01-01T00:00:00",
             started_at=None,
@@ -350,6 +351,7 @@ class TestPydanticModels:
             winner_id=None,
         )
         assert response.id == "game-123"
+        assert response.mode == "classic3"
         assert response.status == "waiting"
     
     def test_join_game_request_valid(self):
@@ -372,16 +374,17 @@ class TestPydanticModels:
     
     def test_move_request_valid(self):
         """Test MoveRequest with valid data."""
-        request = MoveRequest(player_id="player-123", column_index=3)
+        request = MoveRequest(player_id="player-123", column_index=3, row_index=2)
         assert request.column_index == 3
+        assert request.row_index == 2
     
     def test_move_request_validation(self):
         """Test MoveRequest validation."""
         with pytest.raises(ValueError):
-            MoveRequest(player_id="player-123", column_index=7)
+            MoveRequest(player_id="player-123", column_index=15, row_index=0)
         
         with pytest.raises(ValueError):
-            MoveRequest(player_id="player-123", column_index=-1)
+            MoveRequest(player_id="player-123", column_index=-1, row_index=0)
     
     def test_move_response_valid(self):
         """Test MoveResponse with valid data."""
@@ -424,6 +427,7 @@ class TestPydanticModels:
         """Test GameStateResponse with valid data."""
         game = GameResponse(
             id="game-123",
+            mode="classic3",
             status="active",
             created_at="2024-01-01T00:00:00",
         )

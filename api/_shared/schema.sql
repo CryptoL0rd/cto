@@ -1,6 +1,7 @@
 -- Games table
 CREATE TABLE IF NOT EXISTS games (
     id TEXT PRIMARY KEY,
+    mode TEXT NOT NULL CHECK(mode IN ('classic3', 'gomoku')),
     status TEXT NOT NULL CHECK(status IN ('waiting', 'active', 'completed', 'abandoned')),
     created_at TEXT NOT NULL,
     started_at TEXT,
@@ -28,8 +29,8 @@ CREATE TABLE IF NOT EXISTS moves (
     game_id TEXT NOT NULL,
     player_id TEXT NOT NULL,
     move_number INTEGER NOT NULL,
-    column_index INTEGER NOT NULL CHECK(column_index >= 0 AND column_index < 7),
-    row_index INTEGER NOT NULL CHECK(row_index >= 0 AND row_index < 6),
+    column_index INTEGER NOT NULL CHECK(column_index >= 0 AND column_index < 15),
+    row_index INTEGER NOT NULL CHECK(row_index >= 0 AND row_index < 15),
     created_at TEXT NOT NULL,
     FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE CASCADE,
     FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE,

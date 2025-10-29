@@ -6,12 +6,14 @@ from datetime import datetime
 class CreateGameRequest(BaseModel):
     """Request to create a new game."""
     player_name: str = Field(..., min_length=1, max_length=50)
+    mode: Literal["classic3", "gomoku"] = Field(default="classic3")
     is_ai_opponent: bool = Field(default=False)
 
 
 class GameResponse(BaseModel):
     """Response containing game information."""
     id: str
+    mode: Literal["classic3", "gomoku"]
     status: Literal["waiting", "active", "completed", "abandoned"]
     created_at: str
     started_at: Optional[str] = None
@@ -38,13 +40,21 @@ class PlayerResponse(BaseModel):
 class MoveRequest(BaseModel):
     """Request to make a move in a game."""
     player_id: str
-    column_index: int = Field(..., ge=0, lt=7)
+    column_index: int = Field(..., ge=0, lt=15)
+    row_index: int = Field(..., ge=0, lt=15)
     
     @field_validator("column_index")
     @classmethod
     def validate_column_index(cls, v: int) -> int:
-        if v < 0 or v >= 7:
-            raise ValueError("column_index must be between 0 and 6")
+        if v < 0 or v >= 15:
+            raise ValueError("column_index must be between 0 and 14")
+        return v
+    
+    @field_validator("row_index")
+    @classmethod
+    def validate_row_index(cls, v: int) -> int:
+        if v < 0 or v >= 15:
+            raise ValueError("row_index must be between 0 and 14")
         return v
 
 
