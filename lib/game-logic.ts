@@ -1,25 +1,14 @@
 // Client-side game logic helpers
 
-import type {
-  GameBoard,
-  BoardCell,
-  GameMode,
-  Move,
-  Symbol,
-  Player,
-} from "./types";
+import type { GameBoard, BoardCell, GameMode, Move, Symbol, Player } from './types';
 
 // Get board size based on game mode
 export function getBoardSize(mode: GameMode): number {
-  return mode === "classic3" ? 3 : 15;
+  return mode === 'classic3' ? 3 : 15;
 }
 
 // Convert moves array into a 2D board representation
-export function buildBoard(
-  mode: GameMode,
-  moves: Move[],
-  players: Player[]
-): GameBoard {
+export function buildBoard(mode: GameMode, moves: Move[], players: Player[]): GameBoard {
   const size = getBoardSize(mode);
   const cells: BoardCell[][] = Array.from({ length: size }, () =>
     Array.from({ length: size }, () => ({
@@ -36,7 +25,7 @@ export function buildBoard(
     const player = playerMap.get(move.player_id);
     if (player && isValidPosition(mode, move.row_index, move.column_index)) {
       cells[move.row_index][move.column_index] = {
-        symbol: player.player_number === 1 ? "X" : "O",
+        symbol: player.player_number === 1 ? 'X' : 'O',
         player_number: player.player_number,
       };
     }
@@ -46,21 +35,13 @@ export function buildBoard(
 }
 
 // Check if a position is valid for the given mode
-export function isValidPosition(
-  mode: GameMode,
-  row: number,
-  column: number
-): boolean {
+export function isValidPosition(mode: GameMode, row: number, column: number): boolean {
   const size = getBoardSize(mode);
   return row >= 0 && row < size && column >= 0 && column < size;
 }
 
 // Check if a position is occupied on the board
-export function isPositionOccupied(
-  board: GameBoard,
-  row: number,
-  column: number
-): boolean {
+export function isPositionOccupied(board: GameBoard, row: number, column: number): boolean {
   if (row < 0 || row >= board.size || column < 0 || column >= board.size) {
     return true; // Out of bounds counts as occupied
   }
@@ -73,12 +54,12 @@ export function validateMove(
   row: number,
   column: number
 ): { valid: boolean; error?: string } {
-  if (!isValidPosition(board.size === 3 ? "classic3" : "gomoku", row, column)) {
-    return { valid: false, error: "Position out of bounds" };
+  if (!isValidPosition(board.size === 3 ? 'classic3' : 'gomoku', row, column)) {
+    return { valid: false, error: 'Position out of bounds' };
   }
 
   if (isPositionOccupied(board, row, column)) {
-    return { valid: false, error: "Position already occupied" };
+    return { valid: false, error: 'Position already occupied' };
   }
 
   return { valid: true };
@@ -219,7 +200,7 @@ function checkWinnerGomoku(board: GameBoard): Symbol {
 
 // Check if there's a winner on the board
 export function checkWinner(mode: GameMode, board: GameBoard): Symbol {
-  if (mode === "classic3") {
+  if (mode === 'classic3') {
     return checkWinnerClassic3(board);
   } else {
     return checkWinnerGomoku(board);
@@ -263,10 +244,7 @@ export function getCellCoordinates(
 }
 
 // Determine whose turn it is
-export function getCurrentPlayer(
-  currentTurn: number | null,
-  players: Player[]
-): Player | null {
+export function getCurrentPlayer(currentTurn: number | null, players: Player[]): Player | null {
   if (currentTurn === null) return null;
   return players.find((p) => p.player_number === currentTurn) || null;
 }
@@ -284,14 +262,14 @@ export function isPlayerTurn(
 
 // Type for winning line positions
 export type WinningLineType =
-  | "row-0"
-  | "row-1"
-  | "row-2"
-  | "col-0"
-  | "col-1"
-  | "col-2"
-  | "diag-main"
-  | "diag-anti";
+  | 'row-0'
+  | 'row-1'
+  | 'row-2'
+  | 'col-0'
+  | 'col-1'
+  | 'col-2'
+  | 'diag-main'
+  | 'diag-anti';
 
 export interface WinningLine {
   type: WinningLineType;
@@ -345,7 +323,7 @@ export function getWinningLineClassic3(board: GameBoard): WinningLine | null {
     cells[1][1].symbol === cells[2][2].symbol
   ) {
     return {
-      type: "diag-main",
+      type: 'diag-main',
       positions: [
         [0, 0],
         [1, 1],
@@ -361,7 +339,7 @@ export function getWinningLineClassic3(board: GameBoard): WinningLine | null {
     cells[1][1].symbol === cells[2][0].symbol
   ) {
     return {
-      type: "diag-anti",
+      type: 'diag-anti',
       positions: [
         [0, 2],
         [1, 1],

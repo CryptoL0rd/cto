@@ -1,33 +1,35 @@
 {
-  "name": "project",
-  "version": "0.1.0",
+  "name": "tic-tac-toe-gomoku",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run init-db && next build",
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "install:python": "pip install -r requirements.txt"
+    "type-check": "tsc --noEmit",
+    "dev:api": "uvicorn api.index:app --reload --port 8000",
+    "init-db": "python api/_shared/init_db.py"
   },
   "dependencies": {
     "clsx": "^2.1.1",
-    "next": "14.2.33",
-    "react": "^18",
-    "react-dom": "^18",
+    "next": "14.2.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "autoprefixer": "^10.4.19",
     "eslint": "^8",
-    "eslint-config-next": "14.2.33",
-    "eslint-config-prettier": "^10.1.8",
-    "postcss": "^8",
-    "prettier": "^3.6.2",
-    "tailwindcss": "^3.4.1",
+    "eslint-config-next": "14.2.0",
+    "postcss": "^8.4.38",
+    "prettier": "^3.2.5",
+    "tailwindcss": "^3.4.3",
     "typescript": "^5"
   }
 }

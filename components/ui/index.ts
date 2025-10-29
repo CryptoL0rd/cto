@@ -1,8 +1,8 @@
-export { default as Button } from "./Button";
-export type { ButtonProps } from "./Button";
+export { default as Button } from './Button';
+export type { ButtonProps } from './Button';
 
-export { default as Input } from "./Input";
-export type { InputProps } from "./Input";
+export { default as Input } from './Input';
+export type { InputProps } from './Input';
 
 export {
   default as Card,
@@ -11,16 +11,10 @@ export {
   CardDescription,
   CardContent,
   CardFooter,
-} from "./Card";
-export type { CardProps } from "./Card";
+} from './Card';
+export type { CardProps } from './Card';
 
-export { ToastProvider, useToast } from "./Toast";
+export { ToastProvider, useToast } from './Toast';
 
-export {
-  default as Modal,
-  ModalHeader,
-  ModalTitle,
-  ModalContent,
-  ModalFooter,
-} from "./Modal";
-export type { ModalProps } from "./Modal";
+export { default as Modal, ModalHeader, ModalTitle, ModalContent, ModalFooter } from './Modal';
+export type { ModalProps } from './Modal';

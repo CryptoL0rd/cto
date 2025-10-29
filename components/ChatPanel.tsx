@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useState, useRef, useEffect, FormEvent } from "react";
-import { useChat } from "@/lib/hooks";
-import { sendMessage } from "@/lib/api";
-import type { Message } from "@/lib/types";
-import Button from "@/components/ui/Button";
-import { cn } from "@/lib/utils";
+import { useState, useRef, useEffect, FormEvent } from 'react';
+import { useChat } from '@/lib/hooks';
+import { sendMessage } from '@/lib/api';
+import type { Message } from '@/lib/types';
+import Button from '@/components/ui/Button';
+import { cn } from '@/lib/utils';
 
 interface ChatPanelProps {
   gameId: string;
@@ -13,13 +13,9 @@ interface ChatPanelProps {
   className?: string;
 }
 
-export default function ChatPanel({
-  gameId,
-  playerId,
-  className,
-}: ChatPanelProps) {
+export default function ChatPanel({ gameId, playerId, className }: ChatPanelProps) {
   const { messages, isLoading, error } = useChat(gameId);
-  const [messageText, setMessageText] = useState("");
+  const [messageText, setMessageText] = useState('');
   const [isSending, setIsSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
@@ -27,7 +23,7 @@ export default function ChatPanel({
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
 
@@ -39,7 +35,7 @@ export default function ChatPanel({
     }
 
     const text = messageText.trim();
-    setMessageText("");
+    setMessageText('');
     setIsSending(true);
 
     try {
@@ -49,7 +45,7 @@ export default function ChatPanel({
         text,
       });
     } catch (err) {
-      console.error("Failed to send message:", err);
+      console.error('Failed to send message:', err);
       // Restore message text on error
       setMessageText(text);
     } finally {
@@ -59,7 +55,7 @@ export default function ChatPanel({
 
   const renderMessage = (message: Message) => {
     const isOwnMessage = message.player_id === playerId;
-    const isSystemMessage = message.message_type === "system";
+    const isSystemMessage = message.message_type === 'system';
 
     if (isSystemMessage) {
       return (
@@ -74,29 +70,21 @@ export default function ChatPanel({
     return (
       <div
         key={message.id}
-        className={cn(
-          "flex mb-3",
-          isOwnMessage ? "justify-end" : "justify-start"
-        )}
+        className={cn('flex mb-3', isOwnMessage ? 'justify-end' : 'justify-start')}
       >
         <div
           className={cn(
-            "max-w-[80%] rounded-lg px-4 py-2 break-words",
+            'max-w-[80%] rounded-lg px-4 py-2 break-words',
             isOwnMessage
-              ? "bg-cosmic-600 text-white rounded-br-none"
-              : "bg-slate-700 text-slate-100 rounded-bl-none"
+              ? 'bg-cosmic-600 text-white rounded-br-none'
+              : 'bg-slate-700 text-slate-100 rounded-bl-none'
           )}
         >
           <p className="text-sm">{message.content}</p>
-          <p
-            className={cn(
-              "text-xs mt-1",
-              isOwnMessage ? "text-cosmic-200" : "text-slate-400"
-            )}
-          >
+          <p className={cn('text-xs mt-1', isOwnMessage ? 'text-cosmic-200' : 'text-slate-400')}>
             {new Date(message.created_at).toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
+              hour: '2-digit',
+              minute: '2-digit',
             })}
           </p>
         </div>
@@ -107,7 +95,7 @@ export default function ChatPanel({
   return (
     <div
       className={cn(
-        "flex flex-col bg-slate-900/40 backdrop-blur-xl border border-slate-700/50 rounded-xl overflow-hidden",
+        'flex flex-col bg-slate-900/40 backdrop-blur-xl border border-slate-700/50 rounded-xl overflow-hidden',
         className
       )}
     >
@@ -120,12 +108,10 @@ export default function ChatPanel({
       <div
         ref={messagesContainerRef}
         className="flex-1 overflow-y-auto px-4 py-4 space-y-1"
-        style={{ minHeight: "300px", maxHeight: "500px" }}
+        style={{ minHeight: '300px', maxHeight: '500px' }}
       >
         {error && (
-          <div className="text-center text-sm text-nebula-400 py-4">
-            Failed to load messages
-          </div>
+          <div className="text-center text-sm text-nebula-400 py-4">Failed to load messages</div>
         )}
 
         {!error && messages.length === 0 && !isLoading && (
@@ -149,10 +135,10 @@ export default function ChatPanel({
             placeholder="Type a message..."
             disabled={isSending || !playerId}
             className={cn(
-              "flex-1 bg-slate-900/50 backdrop-blur-sm border rounded-lg px-4 py-2.5 text-slate-100 placeholder-slate-500 transition-all duration-200",
-              "focus:outline-none focus:ring-2 focus:ring-cosmic-500/50 focus:border-cosmic-500",
-              "border-slate-700/50",
-              "disabled:opacity-50 disabled:cursor-not-allowed"
+              'flex-1 bg-slate-900/50 backdrop-blur-sm border rounded-lg px-4 py-2.5 text-slate-100 placeholder-slate-500 transition-all duration-200',
+              'focus:outline-none focus:ring-2 focus:ring-cosmic-500/50 focus:border-cosmic-500',
+              'border-slate-700/50',
+              'disabled:opacity-50 disabled:cursor-not-allowed'
             )}
           />
           <Button
@@ -165,12 +151,7 @@ export default function ChatPanel({
             {isSending ? (
               <span>Sending...</span>
             ) : (
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"

@@ -2,252 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #0f172a;
-  --foreground: #f8fafc;
-  --cosmic-primary: #667eea;
-  --cosmic-secondary: #764ba2;
-  --galaxy-primary: #a855f7;
-  --galaxy-secondary: #6366f1;
-  --nebula-primary: #f43f5e;
-  --nebula-secondary: #e11d48;
-
-  /* Gradients */
-  --cosmic-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --galaxy-gradient: linear-gradient(
-    135deg,
-    #a855f7 0%,
-    #6366f1 50%,
-    #3b82f6 100%
-  );
-  --nebula-gradient: linear-gradient(
-    135deg,
-    #f43f5e 0%,
-    #e11d48 50%,
-    #be123c 100%
-  );
-  --starfield-gradient: radial-gradient(
-    ellipse at top,
-    #1e293b 0%,
-    #0f172a 100%
-  );
-
-  /* Glass effect */
-  --glass-bg: rgba(15, 23, 42, 0.7);
-  --glass-border: rgba(148, 163, 184, 0.2);
-
-  /* Shadows */
-  --glow-cosmic: 0 0 20px rgba(102, 126, 234, 0.5);
-  --glow-galaxy: 0 0 20px rgba(168, 85, 247, 0.5);
-  --glow-nebula: 0 0 20px rgba(244, 63, 94, 0.5);
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
-    Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  position: relative;
-  overflow-x: hidden;
-}
-
-/* Starfield effect */
-.starfield {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  pointer-events: none;
-}
-
-.starfield::before,
-.starfield::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image:
-    radial-gradient(2px 2px at 20px 30px, white, transparent),
-    radial-gradient(2px 2px at 60px 70px, white, transparent),
-    radial-gradient(1px 1px at 50px 50px, white, transparent),
-    radial-gradient(1px 1px at 130px 80px, white, transparent),
-    radial-gradient(2px 2px at 90px 10px, white, transparent);
-  background-size: 200px 200px;
-  background-repeat: repeat;
-  opacity: 0.5;
-  animation: twinkle 5s ease-in-out infinite;
-}
-
-.starfield::after {
-  background-size: 300px 300px;
-  animation: twinkle 7s ease-in-out infinite reverse;
-}
-
-@keyframes twinkle {
-  0%,
-  100% {
-    opacity: 0.5;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
-@keyframes pulse-glow {
-  0%,
-  100% {
-    box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
-  }
-  50% {
-    box-shadow:
-      0 0 30px rgba(102, 126, 234, 0.8),
-      0 0 40px rgba(102, 126, 234, 0.4);
-  }
-}
-
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
 @layer base {
-  * {
-    @apply border-slate-700;
+  :root {
+    --cosmic-dark: #0b0f1a;
+    --cosmic-darker: #0d1117;
+    --cosmic-purple: #6366f1;
+    --cosmic-blue: #3b82f6;
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    @apply font-bold;
-  }
-
-  h1 {
-    @apply text-4xl;
-  }
-
-  h2 {
-    @apply text-3xl;
-  }
-
-  h3 {
-    @apply text-2xl;
+  body {
+    @apply bg-cosmic-dark text-white antialiased;
+    background: linear-gradient(135deg, #0b0f1a 0%, #1a0b2e 50%, #0b0f1a 100%);
+    background-attachment: fixed;
   }
 }
 
 @layer components {
-  .btn-cosmic {
-    @apply bg-gradient-to-r from-cosmic-500 to-cosmic-700 text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105;
+  .glass-card {
+    @apply backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl;
   }
 
-  .btn-galaxy {
-    @apply bg-gradient-to-r from-galaxy-500 to-galaxy-700 text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105;
+  .cosmic-glow {
+    @apply shadow-cosmic transition-shadow duration-300;
   }
 
-  .card-cosmic {
-    @apply bg-slate-800/70 backdrop-blur-md rounded-xl shadow-lg p-6 border border-slate-700/50 hover:shadow-xl hover:border-cosmic-500/50 transition-all duration-300;
-  }
-
-  .gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-cosmic-400 to-galaxy-500;
-  }
-
-  .glass-panel {
-    @apply bg-slate-900/40 backdrop-blur-xl border border-slate-700/50 rounded-xl;
-  }
-
-  .input-cosmic {
-    @apply bg-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-lg px-4 py-2 text-slate-100 placeholder-slate-500 focus:border-cosmic-500 focus:ring-2 focus:ring-cosmic-500/50 focus:outline-none transition-all duration-200;
-  }
-
-  .glow-hover-cosmic:hover {
-    box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
-  }
-
-  .glow-hover-galaxy:hover {
-    box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
-  }
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-
-  .animate-pulse-glow {
-    animation: pulse-glow 3s ease-in-out infinite;
-  }
-
-  .animate-float {
-    animation: float 3s ease-in-out infinite;
-  }
-
-  .animate-scale-fade {
-    animation: scale-fade 0.5s ease-out;
-  }
-
-  .animate-draw-line {
-    animation: draw-line 0.6s ease-out forwards;
-  }
-
-  .animate-pulse-subtle {
-    animation: pulse-subtle 2s ease-in-out infinite;
-  }
-}
-
-@keyframes scale-fade {
-  0% {
-    transform: scale(0);
-    opacity: 0;
-  }
-  50% {
-    transform: scale(1.2);
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-@keyframes draw-line {
-  0% {
-    stroke-dasharray: 1000;
-    stroke-dashoffset: 1000;
-    opacity: 0;
-  }
-  20% {
-    opacity: 1;
-  }
-  100% {
-    stroke-dasharray: 1000;
-    stroke-dashoffset: 0;
-    opacity: 1;
-  }
-}
-
-@keyframes pulse-subtle {
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.9;
-    transform: scale(1.02);
+  .cosmic-glow:hover {
+    @apply shadow-cosmic-lg;
   }
 }

@@ -1,9 +1,9 @@
 // Type definitions matching backend Pydantic models
 
-export type GameMode = "classic3" | "gomoku";
-export type GameStatus = "waiting" | "active" | "completed" | "abandoned";
-export type Symbol = "X" | "O" | null;
-export type MessageType = "chat" | "system";
+export type GameMode = 'classic3' | 'gomoku';
+export type GameStatus = 'waiting' | 'active' | 'completed' | 'abandoned';
+export type Symbol = 'X' | 'O' | null;
+export type MessageType = 'chat' | 'system';
 
 export interface Game {
   id: string;

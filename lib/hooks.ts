@@ -1,10 +1,10 @@
 // React hooks for game state, chat, and local player management
 
-"use client";
+'use client';
 
-import { useEffect, useState, useRef, useCallback } from "react";
-import type { GameStateResponse, Message } from "./types";
-import { getGameState, getMessages } from "./api";
+import { useEffect, useState, useRef, useCallback } from 'react';
+import type { GameStateResponse, Message } from './types';
+import { getGameState, getMessages } from './api';
 
 // Hook to manage local player ID in localStorage with SSR guards
 export function useLocalPlayer() {
@@ -13,16 +13,16 @@ export function useLocalPlayer() {
 
   useEffect(() => {
     // SSR guard - only run on client
-    if (typeof window === "undefined") {
+    if (typeof window === 'undefined') {
       setIsLoading(false);
       return;
     }
 
     try {
-      const stored = localStorage.getItem("player_id");
+      const stored = localStorage.getItem('player_id');
       setPlayerId(stored);
     } catch (error) {
-      console.error("Failed to read player_id from localStorage:", error);
+      console.error('Failed to read player_id from localStorage:', error);
     } finally {
       setIsLoading(false);
     }
@@ -30,17 +30,17 @@ export function useLocalPlayer() {
 
   const savePlayerId = useCallback((id: string | null) => {
     // SSR guard
-    if (typeof window === "undefined") return;
+    if (typeof window === 'undefined') return;
 
     setPlayerId(id);
     try {
       if (id === null) {
-        localStorage.removeItem("player_id");
+        localStorage.removeItem('player_id');
       } else {
-        localStorage.setItem("player_id", id);
+        localStorage.setItem('player_id', id);
       }
     } catch (error) {
-      console.error("Failed to save player_id to localStorage:", error);
+      console.error('Failed to save player_id to localStorage:', error);
     }
   }, []);
 
@@ -68,9 +68,7 @@ export function useGameState(gameId: string | null, pollingInterval = 2000) {
       }
     } catch (err) {
       if (mountedRef.current) {
-        setError(
-          err instanceof Error ? err : new Error("Failed to fetch game state")
-        );
+        setError(err instanceof Error ? err : new Error('Failed to fetch game state'));
       }
     } finally {
       if (mountedRef.current) {
@@ -125,19 +123,14 @@ export function useChat(gameId: string | null, pollingInterval = 2000) {
 
     try {
       setIsLoading(true);
-      const response = await getMessages(
-        gameId,
-        lastFetchTimeRef.current || undefined
-      );
+      const response = await getMessages(gameId, lastFetchTimeRef.current || undefined);
 
       if (mountedRef.current) {
         if (response.messages.length > 0) {
           // Deduplicate messages by ID
           setMessages((prev) => {
             const existingIds = new Set(prev.map((m) => m.id));
-            const newMessages = response.messages.filter(
-              (m) => !existingIds.has(m.id)
-            );
+            const newMessages = response.messages.filter((m) => !existingIds.has(m.id));
 
             if (newMessages.length > 0) {
               // Update last fetch time to most recent message
@@ -153,9 +146,7 @@ export function useChat(gameId: string | null, pollingInterval = 2000) {
       }
     } catch (err) {
       if (mountedRef.current) {
-        setError(
-          err instanceof Error ? err : new Error("Failed to fetch messages")
-        );
+        setError(err instanceof Error ? err : new Error('Failed to fetch messages'));
       }
     } finally {
       if (mountedRef.current) {
@@ -183,17 +174,14 @@ export function useChat(gameId: string | null, pollingInterval = 2000) {
         if (mountedRef.current) {
           setMessages(response.messages);
           if (response.messages.length > 0) {
-            const latestMessage =
-              response.messages[response.messages.length - 1];
+            const latestMessage = response.messages[response.messages.length - 1];
             lastFetchTimeRef.current = latestMessage.created_at;
           }
           setError(null);
         }
       } catch (err) {
         if (mountedRef.current) {
-          setError(
-            err instanceof Error ? err : new Error("Failed to fetch messages")
-          );
+          setError(err instanceof Error ? err : new Error('Failed to fetch messages'));
         }
       } finally {
         if (mountedRef.current) {

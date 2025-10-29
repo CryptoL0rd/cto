@@ -1,14 +1,9 @@
-"use client";
+'use client';
 
-import { useState, useCallback, useMemo } from "react";
-import type { GameStateResponse, Symbol } from "@/lib/types";
-import {
-  buildBoard,
-  getWinningLineClassic3,
-  isPlayerTurn,
-  isBoardFull,
-} from "@/lib/game-logic";
-import { makeMove } from "@/lib/api";
+import { useState, useCallback, useMemo } from 'react';
+import type { GameStateResponse, Symbol } from '@/lib/types';
+import { buildBoard, getWinningLineClassic3, isPlayerTurn, isBoardFull } from '@/lib/game-logic';
+import { makeMove } from '@/lib/api';
 
 interface GameBoard3x3Props {
   gameState: GameStateResponse;
@@ -22,54 +17,35 @@ interface OptimisticMove {
   symbol: Symbol;
 }
 
-export default function GameBoard3x3({
-  gameState,
-  playerId,
-  onMoveComplete,
-}: GameBoard3x3Props) {
-  const [optimisticMove, setOptimisticMove] = useState<OptimisticMove | null>(
-    null
-  );
+export default function GameBoard3x3({ gameState, playerId, onMoveComplete }: GameBoard3x3Props) {
+  const [optimisticMove, setOptimisticMove] = useState<OptimisticMove | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [animatingCells, setAnimatingCells] = useState<Set<string>>(new Set());
 
   // Build board from game state
   const board = useMemo(() => {
-    const builtBoard = buildBoard(
-      "classic3",
-      gameState.moves,
-      gameState.players
-    );
+    const builtBoard = buildBoard('classic3', gameState.moves, gameState.players);
 
     // Apply optimistic move if exists
     if (optimisticMove && !isSubmitting) {
       builtBoard.cells[optimisticMove.row][optimisticMove.col] = {
         symbol: optimisticMove.symbol,
-        player_number:
-          gameState.players.find((p) => p.id === playerId)?.player_number ||
-          null,
+        player_number: gameState.players.find((p) => p.id === playerId)?.player_number || null,
       };
     }
 
     return builtBoard;
-  }, [
-    gameState.moves,
-    gameState.players,
-    optimisticMove,
-    isSubmitting,
-    playerId,
-  ]);
+  }, [gameState.moves, gameState.players, optimisticMove, isSubmitting, playerId]);
 
   // Get winning line if exists
   const winningLine = useMemo(() => {
-    if (gameState.game.status !== "completed") return null;
+    if (gameState.game.status !== 'completed') return null;
     return getWinningLineClassic3(board);
   }, [board, gameState.game.status]);
 
   // Check if game is finished
   const isGameFinished =
-    gameState.game.status === "completed" ||
-    gameState.game.status === "abandoned";
+    gameState.game.status === 'completed' || gameState.game.status === 'abandoned';
 
   // Check if it's current player's turn
   const isMyTurn = playerId
@@ -77,30 +53,20 @@ export default function GameBoard3x3({
     : false;
 
   // Check if game is a draw
-  const isDraw =
-    isGameFinished && !gameState.game.winner_id && isBoardFull(board);
+  const isDraw = isGameFinished && !gameState.game.winner_id && isBoardFull(board);
 
   // Get player symbol
   const myPlayerNumber = useMemo(() => {
-    return (
-      gameState.players.find((p) => p.id === playerId)?.player_number || null
-    );
+    return gameState.players.find((p) => p.id === playerId)?.player_number || null;
   }, [gameState.players, playerId]);
 
-  const mySymbol: Symbol =
-    myPlayerNumber === 1 ? "X" : myPlayerNumber === 2 ? "O" : null;
+  const mySymbol: Symbol = myPlayerNumber === 1 ? 'X' : myPlayerNumber === 2 ? 'O' : null;
 
   // Handle cell click
   const handleCellClick = useCallback(
     async (row: number, col: number) => {
       // Validate click
-      if (
-        !playerId ||
-        !mySymbol ||
-        isGameFinished ||
-        !isMyTurn ||
-        isSubmitting
-      ) {
+      if (!playerId || !mySymbol || isGameFinished || !isMyTurn || isSubmitting) {
         return;
       }
 
@@ -131,11 +97,11 @@ export default function GameBoard3x3({
         onMoveComplete?.();
       } catch (error) {
         // Rollback on error
-        console.error("Failed to make move:", error);
+        console.error('Failed to make move:', error);
         setOptimisticMove(null);
 
         // Show error feedback (could be enhanced with toast notification)
-        alert(error instanceof Error ? error.message : "Failed to make move");
+        alert(error instanceof Error ? error.message : 'Failed to make move');
       } finally {
         setIsSubmitting(false);
         // Remove animation after delay
@@ -171,8 +137,8 @@ export default function GameBoard3x3({
         <div
           className="grid grid-cols-3 gap-2 p-4 bg-slate-900/40 backdrop-blur-xl border border-slate-700/50 rounded-xl"
           style={{
-            width: "min(90vw, 400px)",
-            height: "min(90vw, 400px)",
+            width: 'min(90vw, 400px)',
+            height: 'min(90vw, 400px)',
           }}
         >
           {Array.from({ length: 3 }).map((_, row) =>
@@ -182,9 +148,7 @@ export default function GameBoard3x3({
               const isAnimating = animatingCells.has(cellKey);
               const isEmpty = cell.symbol === null;
               const isWinningCell =
-                winningLine?.positions.some(
-                  ([r, c]) => r === row && c === col
-                ) || false;
+                winningLine?.positions.some(([r, c]) => r === row && c === col) || false;
 
               return (
                 <button
@@ -194,19 +158,19 @@ export default function GameBoard3x3({
                   className={`
                     relative aspect-square rounded-lg flex items-center justify-center
                     transition-all duration-200 text-5xl font-bold
-                    ${isEmpty && canInteract ? "bg-slate-800/50 hover:bg-slate-700/70 hover:scale-105 cursor-pointer" : ""}
-                    ${isEmpty && !canInteract ? "bg-slate-800/30 cursor-not-allowed" : ""}
-                    ${!isEmpty ? "bg-slate-800/70" : ""}
-                    ${isWinningCell ? "bg-cosmic-600/30" : ""}
-                    ${isAnimating ? "animate-scale-fade" : ""}
+                    ${isEmpty && canInteract ? 'bg-slate-800/50 hover:bg-slate-700/70 hover:scale-105 cursor-pointer' : ''}
+                    ${isEmpty && !canInteract ? 'bg-slate-800/30 cursor-not-allowed' : ''}
+                    ${!isEmpty ? 'bg-slate-800/70' : ''}
+                    ${isWinningCell ? 'bg-cosmic-600/30' : ''}
+                    ${isAnimating ? 'animate-scale-fade' : ''}
                   `}
                   aria-label={`Cell ${row}-${col}`}
                 >
                   {cell.symbol && (
                     <span
                       className={`
-                        ${cell.player_number === 1 ? "text-cosmic-400 drop-shadow-glow-cosmic" : "text-nebula-400 drop-shadow-glow-nebula"}
-                        ${isWinningCell ? "animate-pulse-glow" : ""}
+                        ${cell.player_number === 1 ? 'text-cosmic-400 drop-shadow-glow-cosmic' : 'text-nebula-400 drop-shadow-glow-nebula'}
+                        ${isWinningCell ? 'animate-pulse-glow' : ''}
                         transition-all duration-300
                       `}
                     >
@@ -229,8 +193,8 @@ export default function GameBoard3x3({
           <svg
             className="absolute inset-0 pointer-events-none"
             style={{
-              width: "100%",
-              height: "100%",
+              width: '100%',
+              height: '100%',
             }}
           >
             <WinningLineSVG winningLine={winningLine} />
@@ -248,13 +212,9 @@ export default function GameBoard3x3({
         {isGameFinished && !isDraw && gameState.game.winner_id && (
           <div className="text-2xl font-bold">
             {gameState.game.winner_id === playerId ? (
-              <span className="text-cosmic-400 drop-shadow-glow-cosmic">
-                You Won! 🎉
-              </span>
+              <span className="text-cosmic-400 drop-shadow-glow-cosmic">You Won! 🎉</span>
             ) : (
-              <span className="text-nebula-400 drop-shadow-glow-nebula">
-                You Lost 😔
-              </span>
+              <span className="text-nebula-400 drop-shadow-glow-nebula">You Lost 😔</span>
             )}
           </div>
         )}
@@ -288,41 +248,41 @@ function WinningLineSVG({ winningLine }: WinningLineSVGProps) {
     const paddingPercent = 4; // approximate
 
     switch (type) {
-      case "row-0":
+      case 'row-0':
         return {
           x1: 10,
           y1: 16.66 + paddingPercent,
           x2: 90,
           y2: 16.66 + paddingPercent,
         };
-      case "row-1":
+      case 'row-1':
         return { x1: 10, y1: 50, x2: 90, y2: 50 };
-      case "row-2":
+      case 'row-2':
         return {
           x1: 10,
           y1: 83.34 - paddingPercent,
           x2: 90,
           y2: 83.34 - paddingPercent,
         };
-      case "col-0":
+      case 'col-0':
         return {
           x1: 16.66 + paddingPercent,
           y1: 10,
           x2: 16.66 + paddingPercent,
           y2: 90,
         };
-      case "col-1":
+      case 'col-1':
         return { x1: 50, y1: 10, x2: 50, y2: 90 };
-      case "col-2":
+      case 'col-2':
         return {
           x1: 83.34 - paddingPercent,
           y1: 10,
           x2: 83.34 - paddingPercent,
           y2: 90,
         };
-      case "diag-main":
+      case 'diag-main':
         return { x1: 15, y1: 15, x2: 85, y2: 85 };
-      case "diag-anti":
+      case 'diag-anti':
         return { x1: 85, y1: 15, x2: 15, y2: 85 };
       default:
         return { x1: 0, y1: 0, x2: 0, y2: 0 };
