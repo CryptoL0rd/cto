@@ -6,3 +6,6 @@ app = FastAPI()
 @app.get("/api/hello")
 async def hello():
     return JSONResponse(content={"message": "Hello from FastAPI!"})
+
+
+handler = app
