@@ -11,17 +11,31 @@
   --galaxy-secondary: #6366f1;
   --nebula-primary: #f43f5e;
   --nebula-secondary: #e11d48;
-  
+
   /* Gradients */
   --cosmic-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --galaxy-gradient: linear-gradient(135deg, #a855f7 0%, #6366f1 50%, #3b82f6 100%);
-  --nebula-gradient: linear-gradient(135deg, #f43f5e 0%, #e11d48 50%, #be123c 100%);
-  --starfield-gradient: radial-gradient(ellipse at top, #1e293b 0%, #0f172a 100%);
-  
+  --galaxy-gradient: linear-gradient(
+    135deg,
+    #a855f7 0%,
+    #6366f1 50%,
+    #3b82f6 100%
+  );
+  --nebula-gradient: linear-gradient(
+    135deg,
+    #f43f5e 0%,
+    #e11d48 50%,
+    #be123c 100%
+  );
+  --starfield-gradient: radial-gradient(
+    ellipse at top,
+    #1e293b 0%,
+    #0f172a 100%
+  );
+
   /* Glass effect */
   --glass-bg: rgba(15, 23, 42, 0.7);
   --glass-border: rgba(148, 163, 184, 0.2);
-  
+
   /* Shadows */
   --glow-cosmic: 0 0 20px rgba(102, 126, 234, 0.5);
   --glow-galaxy: 0 0 20px rgba(168, 85, 247, 0.5);
@@ -60,7 +74,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: 
+  background-image:
     radial-gradient(2px 2px at 20px 30px, white, transparent),
     radial-gradient(2px 2px at 60px 70px, white, transparent),
     radial-gradient(1px 1px at 50px 50px, white, transparent),
@@ -78,18 +92,35 @@ body {
 }
 
 @keyframes twinkle {
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(102, 126, 234, 0.5); }
-  50% { box-shadow: 0 0 30px rgba(102, 126, 234, 0.8), 0 0 40px rgba(102, 126, 234, 0.4); }
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+  }
+  50% {
+    box-shadow:
+      0 0 30px rgba(102, 126, 234, 0.8),
+      0 0 40px rgba(102, 126, 234, 0.4);
+  }
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 @layer base {
@@ -135,19 +166,19 @@ body {
   .gradient-text {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-cosmic-400 to-galaxy-500;
   }
-  
+
   .glass-panel {
     @apply bg-slate-900/40 backdrop-blur-xl border border-slate-700/50 rounded-xl;
   }
-  
+
   .input-cosmic {
     @apply bg-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-lg px-4 py-2 text-slate-100 placeholder-slate-500 focus:border-cosmic-500 focus:ring-2 focus:ring-cosmic-500/50 focus:outline-none transition-all duration-200;
   }
-  
+
   .glow-hover-cosmic:hover {
     box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
   }
-  
+
   .glow-hover-galaxy:hover {
     box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
   }
@@ -157,11 +188,11 @@ body {
   .text-balance {
     text-wrap: balance;
   }
-  
+
   .animate-pulse-glow {
     animation: pulse-glow 3s ease-in-out infinite;
   }
-  
+
   .animate-float {
     animation: float 3s ease-in-out infinite;
   }

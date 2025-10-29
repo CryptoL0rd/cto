@@ -16,7 +16,8 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: "Cosmic UI - Next Generation Interface",
-  description: "Experience the future with our cosmic-themed user interface featuring stunning visual effects and modern design patterns.",
+  description:
+    "Experience the future with our cosmic-themed user interface featuring stunning visual effects and modern design patterns.",
 };
 
 export default function RootLayout({
@@ -31,9 +32,7 @@ export default function RootLayout({
       >
         <div className="starfield" aria-hidden="true" />
         <div className="relative z-10">
-          <ToastProvider>
-            {children}
-          </ToastProvider>
+          <ToastProvider>{children}</ToastProvider>
         </div>
       </body>
     </html>

@@ -77,27 +77,33 @@ const config: Config = {
       },
       boxShadow: {
         "glow-cosmic": "0 0 20px rgba(102, 126, 234, 0.5)",
-        "glow-cosmic-lg": "0 0 30px rgba(102, 126, 234, 0.8), 0 0 60px rgba(102, 126, 234, 0.4)",
+        "glow-cosmic-lg":
+          "0 0 30px rgba(102, 126, 234, 0.8), 0 0 60px rgba(102, 126, 234, 0.4)",
         "glow-galaxy": "0 0 20px rgba(168, 85, 247, 0.5)",
-        "glow-galaxy-lg": "0 0 30px rgba(168, 85, 247, 0.8), 0 0 60px rgba(168, 85, 247, 0.4)",
+        "glow-galaxy-lg":
+          "0 0 30px rgba(168, 85, 247, 0.8), 0 0 60px rgba(168, 85, 247, 0.4)",
         "glow-nebula": "0 0 20px rgba(244, 63, 94, 0.5)",
-        "glow-nebula-lg": "0 0 30px rgba(244, 63, 94, 0.8), 0 0 60px rgba(244, 63, 94, 0.4)",
+        "glow-nebula-lg":
+          "0 0 30px rgba(244, 63, 94, 0.8), 0 0 60px rgba(244, 63, 94, 0.4)",
       },
       animation: {
         "pulse-glow": "pulse-glow 3s ease-in-out infinite",
-        "float": "float 3s ease-in-out infinite",
-        "twinkle": "twinkle 5s ease-in-out infinite",
+        float: "float 3s ease-in-out infinite",
+        twinkle: "twinkle 5s ease-in-out infinite",
       },
       keyframes: {
         "pulse-glow": {
           "0%, 100%": { boxShadow: "0 0 20px rgba(102, 126, 234, 0.5)" },
-          "50%": { boxShadow: "0 0 30px rgba(102, 126, 234, 0.8), 0 0 40px rgba(102, 126, 234, 0.4)" },
+          "50%": {
+            boxShadow:
+              "0 0 30px rgba(102, 126, 234, 0.8), 0 0 40px rgba(102, 126, 234, 0.4)",
+          },
         },
-        "float": {
+        float: {
           "0%, 100%": { transform: "translateY(0px)" },
           "50%": { transform: "translateY(-10px)" },
         },
-        "twinkle": {
+        twinkle: {
           "0%, 100%": { opacity: "0.5" },
           "50%": { opacity: "1" },
         },

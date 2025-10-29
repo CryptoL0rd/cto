@@ -32,10 +32,10 @@ export default function InviteCodeDisplay({
         document.execCommand("copy");
         textArea.remove();
       }
-      
+
       setCopied(true);
       showToast("Invite code copied to clipboard!", "success");
-      
+
       setTimeout(() => {
         setCopied(false);
       }, 2000);

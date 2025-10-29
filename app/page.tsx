@@ -35,7 +35,8 @@ export default function Home() {
               Cosmic UI Kit
             </h1>
             <p className="text-xl text-slate-300">
-              A comprehensive collection of reusable components with a stunning cosmic theme
+              A comprehensive collection of reusable components with a stunning
+              cosmic theme
             </p>
           </div>
 
@@ -138,7 +139,9 @@ export default function Home() {
                 <Card hoverable glowOnHover>
                   <CardHeader>
                     <CardTitle>Hoverable Card</CardTitle>
-                    <CardDescription>Hover to see the glow effect</CardDescription>
+                    <CardDescription>
+                      Hover to see the glow effect
+                    </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <p className="text-slate-300">

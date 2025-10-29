@@ -1,31 +1,31 @@
 # Game Service Implementation Summary
 
 ## Overview
+
 This document summarizes the implementation of the game service module that provides core game domain logic for Classic 3x3 (tic-tac-toe) and Gomoku (15x15, 5-in-a-row) game modes.
 
 ## Implemented Files
 
 ### 1. `/api/_shared/game_service.py`
+
 Core game service module with the following functions:
 
 #### Core Functions
+
 - **`generate_invite_code()`**: Generates unique 6-character uppercase alphanumeric invite codes
 - **`create_game(db, mode, player_name, is_ai_opponent)`**: Creates a new game
   - Supports 'classic3' and 'gomoku' modes
   - Uses invite code as game ID for easy joining
   - Optionally adds AI opponent and starts game immediately
   - Returns game_id, player_id, invite_code, and mode
-  
 - **`join_game(db, invite_code, player_name)`**: Joins an existing game
   - Validates game exists and is available (waiting status)
   - Checks game is not full (max 2 players)
   - Changes game status to 'active' and sets current_turn to 1
   - Returns game_id, player_id, and mode
-  
 - **`get_game_state(db, game_id)`**: Retrieves complete game state
   - Returns dictionary with game, players, moves, and messages
   - Used for fetching current state for clients
-  
 - **`make_move(db, game_id, player_id, move_data)`**: Processes a move
   - Validates game is active
   - Enforces turn sequencing
@@ -36,13 +36,13 @@ Core game service module with the following functions:
   - Returns move details with win/draw flags
 
 #### Win Detection
+
 - **`check_win_classic3(moves, symbol)`**: Detects Classic 3x3 wins
   - Checks all 8 winning lines:
     - 3 rows (0, 1, 2)
     - 3 columns (0, 1, 2)
     - 2 diagonals (main and anti)
   - Returns True if player has won
-  
 - **`check_win_gomoku(moves, last_move)`**: Detects Gomoku wins
   - Checks 5-in-a-row in all 4 directions:
     - Horizontal (columns)
@@ -53,13 +53,16 @@ Core game service module with the following functions:
   - Returns True if 5 or more in a row
 
 #### Draw Detection
+
 - **`check_draw_classic3(moves)`**: Detects Classic 3x3 draws
   - Returns True when all 9 positions are filled
 
 ### 2. `/tests/test_game_logic.py`
+
 Comprehensive test suite with 41 test cases covering:
 
 #### Test Categories
+
 1. **Invite Code Generation** (4 tests)
    - Length verification (6 characters)
    - Uppercase verification
@@ -118,48 +121,61 @@ Comprehensive test suite with 41 test cases covering:
     - Gomoku complete game with winner
 
 ### 3. Schema Updates
+
 Updated `/api/_shared/schema.sql`:
+
 - Added `mode` column to `games` table (classic3/gomoku)
 - Expanded `moves` table constraints to support 15x15 board (0-14)
 
 ### 4. Model Updates
+
 Updated `/api/_shared/models.py`:
+
 - Added `mode` field to `CreateGameRequest` (default: "classic3")
 - Added `mode` field to `GameResponse`
 - Updated `MoveRequest` to include `row_index` field
 - Updated field validators to support 0-14 range
 
 ### 5. Database Initialization Updates
+
 Updated `/api/_shared/init_db.py`:
+
 - Modified `seed_data()` to include mode in game creation
 
 ### 6. Test Updates
+
 Updated `/test_backend.py`:
+
 - Fixed all tests to include mode field
 - Updated move validation tests for new constraints
 
 ## Acceptance Criteria Status
 
 ✅ **Service functions handle normal and error flows**
+
 - All functions properly validate inputs and raise ValueError for errors
 - Normal flows tested with 41 test cases
 - Error cases include: invalid mode, game not found, full game, not your turn, position occupied, out of bounds
 
 ✅ **check_win_classic3 correctly detects all winning combinations**
+
 - All 8 winning lines tested individually (3 rows + 3 columns + 2 diagonals)
 - No false positives on incomplete or mixed lines
 
 ✅ **check_win_gomoku validates 5-in-a-row in every direction**
+
 - Horizontal, vertical, and both diagonal directions tested
 - Correctly rejects 4-in-a-row
 - Correctly accepts 6+ in-a-row
 
 ✅ **Invite codes are unique per create_game and uppercase length 6**
+
 - Generate 6-character uppercase alphanumeric codes
 - Uniqueness check with retry logic (max 10 attempts)
 - Tested for length, uppercase, and uniqueness
 
 ✅ **Test suite (≥15 cases) passes**
+
 - 41 test cases implemented and passing
 - Covers all 8 Classic lines, Gomoku directions, turn enforcement, and edge cases
 - Additional 31 backend tests also passing (72 total)
@@ -167,6 +183,7 @@ Updated `/test_backend.py`:
 ## Game Flow Examples
 
 ### Classic 3x3 Game Flow
+
 1. Player 1 creates game: `create_game(db, "classic3", "Alice")`
 2. Player 2 joins: `join_game(db, invite_code, "Bob")`
 3. Players alternate moves until:
@@ -175,6 +192,7 @@ Updated `/test_backend.py`:
 4. Game status changes to 'completed'
 
 ### Gomoku Game Flow
+
 1. Player 1 creates game: `create_game(db, "gomoku", "Alice")`
 2. Player 2 joins: `join_game(db, invite_code, "Bob")`
 3. Players alternate moves until:
@@ -190,7 +208,7 @@ Updated `/test_backend.py`:
 
 3. **Turn Sequencing**: Current turn is stored in the database and enforced in `make_move()`. Player 1 always starts.
 
-4. **Win Detection Strategy**: 
+4. **Win Detection Strategy**:
    - Classic3: Checks all 8 possible lines
    - Gomoku: Optimized to check only around the last move in 4 directions
 
@@ -215,6 +233,7 @@ with get_db() as db:
 ## Testing
 
 Run tests with:
+
 ```bash
 # All game logic tests
 python -m pytest tests/test_game_logic.py -v
