@@ -2,7 +2,8 @@
 
 import { useParams, useRouter } from 'next/navigation';
 import GameBoard3x3 from '@/components/GameBoard3x3';
-import { useGameState, useLocalPlayer } from '@/lib/hooks';
+import { useLocalPlayer } from '@/lib/hooks';
+import { useGameStateWebSocket } from '@/lib/useWebSocket';
 import InviteCodeDisplay from '@/components/InviteCodeDisplay';
 
 export default function GamePage() {
@@ -11,7 +12,7 @@ export default function GamePage() {
   const gameId = params.id as string;
   
   const { playerId, isLoading: playerLoading } = useLocalPlayer();
-  const { gameState, isLoading: gameLoading, error, refetch } = useGameState(gameId);
+  const { gameState, isLoading: gameLoading, error, refetch, isConnected } = useGameStateWebSocket(gameId, playerId);
 
   if (playerLoading || gameLoading) {
     return (

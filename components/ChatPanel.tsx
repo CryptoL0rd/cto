@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, FormEvent } from 'react';
-import { useChat } from '@/lib/hooks';
+import { useChatWebSocket } from '@/lib/useWebSocket';
 import { sendMessage } from '@/lib/api';
 import type { Message } from '@/lib/types';
 import Button from '@/components/ui/Button';
@@ -14,7 +14,7 @@ interface ChatPanelProps {
 }
 
 export default function ChatPanel({ gameId, playerId, className }: ChatPanelProps) {
-  const { messages, isLoading, error } = useChat(gameId);
+  const { messages, isLoading, error, isConnected } = useChatWebSocket(gameId);
   const [messageText, setMessageText] = useState('');
   const [isSending, setIsSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);

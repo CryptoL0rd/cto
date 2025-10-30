@@ -1,3 +1,5 @@
+import { broadcastChatUpdate } from '@/server/websocket';
+
 export async function POST(request: Request) {
   try {
     console.log('[API CHAT SEND] Function called');
@@ -50,6 +52,14 @@ export async function POST(request: Request) {
       content: text,
       created_at: now,
     };
+
+    // Broadcast chat update via WebSocket
+    try {
+      broadcastChatUpdate(game_id, [message]);
+    } catch (error) {
+      console.error('[API CHAT SEND] Failed to broadcast WebSocket update:', error);
+      // Don't fail the request if WebSocket broadcast fails
+    }
 
     console.log('[API CHAT SEND] Success, returning message');
 
