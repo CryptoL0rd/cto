@@ -55,7 +55,53 @@ export function useGameState(gameId: string | null, pollingInterval = 2000) {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const mountedRef = useRef(true);
 
-  const fetchGameState = useCallback(async () => {
+  useEffect(() => {
+    mountedRef.current = true;
+
+    if (!gameId) {
+      setGameState(null);
+      setError(null);
+      return;
+    }
+
+    // Define fetch function inside effect to avoid dependency issues
+    const fetchGameState = async () => {
+      try {
+        setIsLoading(true);
+        const state = await getGameState(gameId);
+
+        if (mountedRef.current) {
+          setGameState(state);
+          setError(null);
+        }
+      } catch (err) {
+        if (mountedRef.current) {
+          setError(err instanceof Error ? err : new Error('Failed to fetch game state'));
+        }
+      } finally {
+        if (mountedRef.current) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    // Initial fetch
+    fetchGameState();
+
+    // Set up polling
+    intervalRef.current = setInterval(fetchGameState, pollingInterval);
+
+    // Cleanup
+    return () => {
+      mountedRef.current = false;
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [gameId, pollingInterval]);
+
+  const refetch = useCallback(async () => {
     if (!gameId) return;
 
     try {
@@ -77,35 +123,6 @@ export function useGameState(gameId: string | null, pollingInterval = 2000) {
     }
   }, [gameId]);
 
-  useEffect(() => {
-    mountedRef.current = true;
-
-    if (!gameId) {
-      setGameState(null);
-      setError(null);
-      return;
-    }
-
-    // Initial fetch
-    fetchGameState();
-
-    // Set up polling
-    intervalRef.current = setInterval(fetchGameState, pollingInterval);
-
-    // Cleanup
-    return () => {
-      mountedRef.current = false;
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-    };
-  }, [gameId, pollingInterval, fetchGameState]);
-
-  const refetch = useCallback(() => {
-    fetchGameState();
-  }, [fetchGameState]);
-
   return { gameState, isLoading, error, refetch };
 }
 
@@ -118,43 +135,6 @@ export function useChat(gameId: string | null, pollingInterval = 2000) {
   const mountedRef = useRef(true);
   const lastFetchTimeRef = useRef<string | null>(null);
 
-  const fetchMessages = useCallback(async () => {
-    if (!gameId) return;
-
-    try {
-      setIsLoading(true);
-      const response = await getMessages(gameId, lastFetchTimeRef.current || undefined);
-
-      if (mountedRef.current) {
-        if (response.messages.length > 0) {
-          // Deduplicate messages by ID
-          setMessages((prev) => {
-            const existingIds = new Set(prev.map((m) => m.id));
-            const newMessages = response.messages.filter((m) => !existingIds.has(m.id));
-
-            if (newMessages.length > 0) {
-              // Update last fetch time to most recent message
-              const latestMessage = newMessages[newMessages.length - 1];
-              lastFetchTimeRef.current = latestMessage.created_at;
-
-              return [...prev, ...newMessages];
-            }
-            return prev;
-          });
-        }
-        setError(null);
-      }
-    } catch (err) {
-      if (mountedRef.current) {
-        setError(err instanceof Error ? err : new Error('Failed to fetch messages'));
-      }
-    } finally {
-      if (mountedRef.current) {
-        setIsLoading(false);
-      }
-    }
-  }, [gameId]);
-
   useEffect(() => {
     mountedRef.current = true;
 
@@ -164,6 +144,42 @@ export function useChat(gameId: string | null, pollingInterval = 2000) {
       lastFetchTimeRef.current = null;
       return;
     }
+
+    // Define fetch function inside effect to avoid dependency issues
+    const fetchMessages = async () => {
+      try {
+        setIsLoading(true);
+        const response = await getMessages(gameId, lastFetchTimeRef.current || undefined);
+
+        if (mountedRef.current) {
+          if (response.messages.length > 0) {
+            // Deduplicate messages by ID
+            setMessages((prev) => {
+              const existingIds = new Set(prev.map((m) => m.id));
+              const newMessages = response.messages.filter((m) => !existingIds.has(m.id));
+
+              if (newMessages.length > 0) {
+                // Update last fetch time to most recent message
+                const latestMessage = newMessages[newMessages.length - 1];
+                lastFetchTimeRef.current = latestMessage.created_at;
+
+                return [...prev, ...newMessages];
+              }
+              return prev;
+            });
+          }
+          setError(null);
+        }
+      } catch (err) {
+        if (mountedRef.current) {
+          setError(err instanceof Error ? err : new Error('Failed to fetch messages'));
+        }
+      } finally {
+        if (mountedRef.current) {
+          setIsLoading(false);
+        }
+      }
+    };
 
     // Initial fetch - get all messages
     const initialFetch = async () => {
@@ -203,7 +219,7 @@ export function useChat(gameId: string | null, pollingInterval = 2000) {
         intervalRef.current = null;
       }
     };
-  }, [gameId, pollingInterval, fetchMessages]);
+  }, [gameId, pollingInterval]);
 
   return { messages, isLoading, error };
 }
