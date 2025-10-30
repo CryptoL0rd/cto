@@ -1,109 +1,154 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import GameBoard3x3 from '@/components/GameBoard3x3';
+import { useGameState, useLocalPlayer } from '@/lib/hooks';
+import InviteCodeDisplay from '@/components/InviteCodeDisplay';
 
 export default function GamePage() {
   const params = useParams();
   const router = useRouter();
   const gameId = params.id as string;
   
-  const [game, setGame] = useState<any>(null);
+  const { playerId, isLoading: playerLoading } = useLocalPlayer();
+  const { gameState, isLoading: gameLoading, error, refetch } = useGameState(gameId);
 
-  useEffect(() => {
-    console.log('[Game Page] Loaded with ID:', gameId);
-    
-    // Загрузить из localStorage
-    const stored = localStorage.getItem(`game_${gameId}`);
-    if (stored) {
-      try {
-        const gameData = JSON.parse(stored);
-        console.log('[Game Page] Game data:', gameData);
-        setGame(gameData);
-      } catch (e) {
-        console.error('[Game Page] Parse error:', e);
-      }
-    } else {
-      console.log('[Game Page] No game in localStorage');
-    }
-  }, [gameId]);
+  if (playerLoading || gameLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+        <div className="text-white text-center">
+          <div className="text-6xl mb-4">⏳</div>
+          <p className="text-xl">Загрузка игры...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !gameState) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+        <div className="text-white text-center space-y-4">
+          <div className="text-6xl mb-4">❌</div>
+          <p className="text-xl">Ошибка загрузки игры</p>
+          <p className="text-gray-400">{error?.message || 'Неизвестная ошибка'}</p>
+          <button
+            onClick={() => router.push('/')}
+            className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-semibold transition-all"
+          >
+            ← На главную
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const { game, players } = gameState;
+  const isWaiting = game.status === 'waiting';
+  const isActive = game.status === 'active';
+  const isFinished = game.status === 'completed' || game.status === 'abandoned';
+
+  // Get current player info
+  const currentPlayer = players.find((p) => p.id === playerId);
+  const opponent = players.find((p) => p.id !== playerId);
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-gray-900 to-gray-800">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <div className="max-w-4xl w-full space-y-6">
         {/* Header */}
-        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
+        <div className="bg-slate-900/40 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6">
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-white mb-4">
-              🎮 Игра
+            <h1 className="text-3xl font-bold text-white mb-4">
+              Крестики-Нолики 3×3
             </h1>
             
-            {game ? (
-              <div className="space-y-4">
-                <div className="text-gray-300">
-                  <p className="text-sm text-gray-400 mb-2">Код приглашения:</p>
-                  <code className="text-2xl font-mono font-bold text-purple-400 bg-purple-500/20 px-4 py-2 rounded-lg inline-block">
+            <div className="flex items-center justify-center gap-6 text-sm flex-wrap">
+              {game.invite_code && (
+                <div>
+                  <span className="text-gray-400">Код: </span>
+                  <code className="text-cosmic-400 font-mono font-bold">
                     {game.invite_code}
                   </code>
                 </div>
-                
-                <div className="flex items-center justify-center gap-4 text-sm">
-                  <div className="bg-white/5 px-4 py-2 rounded-lg">
-                    <span className="text-gray-400">Режим: </span>
-                    <span className="text-white font-semibold">
-                      {game.mode === 'classic3' ? '3×3' : 'Гомоку'}
-                    </span>
-                  </div>
-                  
-                  <div className="bg-white/5 px-4 py-2 rounded-lg">
-                    <span className="text-gray-400">Статус: </span>
-                    <span className="text-green-400 font-semibold">
-                      {game.status === 'waiting' ? 'Ожидание' : 'Игра'}
-                    </span>
-                  </div>
+              )}
+              
+              {currentPlayer && (
+                <div>
+                  <span className="text-gray-400">Вы: </span>
+                  <span className={`font-bold ${
+                    currentPlayer.player_number === 1 ? 'text-cosmic-400' : 'text-nebula-400'
+                  }`}>
+                    {currentPlayer.player_name} ({currentPlayer.player_number === 1 ? 'X' : 'O'})
+                  </span>
                 </div>
-              </div>
-            ) : (
-              <div className="text-gray-400">
-                <p>Загрузка игры...</p>
-                <p className="text-sm mt-2">ID: {gameId}</p>
-              </div>
-            )}
+              )}
+
+              {opponent && (
+                <div>
+                  <span className="text-gray-400">Противник: </span>
+                  <span className={`font-bold ${
+                    opponent.player_number === 1 ? 'text-cosmic-400' : 'text-nebula-400'
+                  }`}>
+                    {opponent.player_name} ({opponent.player_number === 1 ? 'X' : 'O'})
+                  </span>
+                </div>
+              )}
+
+              {game.winner_id && (
+                <div className="text-galaxy-400 font-bold">
+                  🏆 {game.winner_id === playerId ? 'Вы победили!' : `${opponent?.player_name} победил!`}
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Game Board Placeholder */}
-        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-12">
-          <div className="text-center space-y-4">
-            <div className="text-6xl mb-4">🎯</div>
-            <h2 className="text-2xl font-bold text-white">
-              Игровое поле
-            </h2>
-            <p className="text-gray-400">
-              Здесь будет доска для игры
-            </p>
-            {game && (
-              <p className="text-sm text-gray-500">
-                Следующий ход: <span className="text-purple-400 font-bold">{game.next_turn || 'X'}</span>
+        {/* Game Board */}
+        <div className="bg-slate-900/40 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-8">
+          {isWaiting ? (
+            <div className="text-center py-16 space-y-4">
+              <div className="text-6xl mb-4">⏳</div>
+              <h2 className="text-2xl font-bold text-white">
+                Ожидание второго игрока...
+              </h2>
+              <p className="text-gray-400">
+                Поделитесь кодом приглашения с другом
               </p>
-            )}
-          </div>
+              {game.invite_code && (
+                <div className="mt-4">
+                  <InviteCodeDisplay code={game.invite_code} />
+                </div>
+              )}
+            </div>
+          ) : (isActive || isFinished) && playerId ? (
+            <GameBoard3x3
+              gameState={gameState}
+              playerId={playerId}
+              onMoveComplete={refetch}
+            />
+          ) : (
+            <div className="text-center py-16 text-gray-400">
+              <div className="text-6xl mb-4">❓</div>
+              <p>Невозможно загрузить игру</p>
+            </div>
+          )}
         </div>
 
         {/* Actions */}
         <div className="flex gap-4">
           <button
             onClick={() => router.push('/')}
-            className="flex-1 px-6 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-semibold transition-all"
+            className="flex-1 px-6 py-3 bg-slate-800/50 hover:bg-slate-700/70 text-white rounded-xl font-semibold transition-all"
           >
-            ← Выйти
+            ← На главную
           </button>
-          <button
-            onClick={() => window.location.reload()}
-            className="flex-1 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-semibold transition-all"
-          >
-            🔄 Обновить
-          </button>
+          {isFinished && (
+            <button
+              onClick={() => router.push('/')}
+              className="flex-1 px-6 py-3 bg-cosmic-600 hover:bg-cosmic-700 text-white rounded-xl font-semibold transition-all"
+            >
+              Новая игра
+            </button>
+          )}
         </div>
       </div>
     </div>
