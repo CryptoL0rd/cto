@@ -6,122 +6,170 @@
   - Local:        http://localhost:3000
 
  ✓ Starting...
- ✓ Ready in 1792ms
- ○ Compiling /api ...
- ✓ Compiled /api in 557ms (53 modules)
- GET /api 200 in 647ms
- ✓ Compiled /api/game/create in 129ms (55 modules)
-[API] Create game request: { mode: 'classic3', player_name: 'Test', is_ai_opponent: undefined }
-[API] Game created: {
-  gameId: 'J0Z7NF',
-  playerId: '1761781104664_oynxli5dhm',
-  mode: 'classic3'
+ ✓ Ready in 1611ms
+ ✓ Compiled /middleware in 489ms (71 modules)
+ ✓ Compiled /api in 219ms (27 modules)
+[API ROOT] Health check called
+ GET /api 200 in 419ms
+ GET /api 200 in 299ms
+[MIDDLEWARE] API Request: {
+  method: 'GET',
+  url: 'http://localhost:3000/api/debug',
+  pathname: '/api/debug',
+  timestamp: '2025-10-30T00:09:58.753Z'
 }
- POST /api/game/create 201 in 194ms
- ✓ Compiled /api/game/join in 70ms (57 modules)
-[API] Join game request: { invite_code: 'J0Z7NF', player_name: 'Test2' }
-[API] Player joined game: {
-  gameId: 'J0Z7NF',
-  playerId: '1761781110661_2y4qozu9sdm',
-  invite_code: 'J0Z7NF'
+ ✓ Compiled /api/debug in 122ms (29 modules)
+[API DEBUG] GET request received
+ GET /api/debug 200 in 176ms
+ GET /api/debug 200 in 168ms
+[MIDDLEWARE] API Request: {
+  method: 'POST',
+  url: 'http://localhost:3000/api/debug',
+  pathname: '/api/debug',
+  timestamp: '2025-10-30T00:10:04.316Z'
 }
- POST /api/game/join 200 in 116ms
- ✓ Compiled /api/game/state in 56ms (59 modules)
-[API] Get game state: { gameId: 'J0Z7NF' }
- GET /api/game/state?game_id=J0Z7NF 200 in 97ms
- ✓ Compiled /api/game/move in 112ms (61 modules)
-[API] Make move: {
-  game_id: 'J0Z7NF',
-  player_id: 'player1',
-  column_index: 0,
-  row_index: 0
+[API DEBUG] POST request received
+[API DEBUG] Body parsed: { test: true }
+ POST /api/debug 200 in 24ms
+ POST /api/debug 200 in 16ms
+[MIDDLEWARE] API Request: {
+  method: 'POST',
+  url: 'http://localhost:3000/api/game/create',
+  pathname: '/api/game/create',
+  timestamp: '2025-10-30T00:10:11.574Z'
 }
- POST /api/game/move 200 in 163ms
- ✓ Compiled /api/chat/send in 73ms (63 modules)
-[API] Send message: { game_id: 'J0Z7NF', player_id: 'player1', text: 'Hello!' }
- POST /api/chat/send 200 in 117ms
- ✓ Compiled /api/chat/list in 113ms (65 modules)
-[API] List messages: { gameId: 'J0Z7NF', since: null }
- GET /api/chat/list?game_id=J0Z7NF 200 in 153ms
- GET /api 200 in 10ms
-[API] Create game request: {
+ ✓ Compiled /api/game/create in 44ms (31 modules)
+[API CREATE] Function called
+[API CREATE] Body parsed: { mode: 'classic3', player_name: 'Test Player' }
+[API CREATE] Params: {
   mode: 'classic3',
-  player_name: 'TestPlayer',
+  player_name: 'Test Player',
   is_ai_opponent: undefined
 }
-[API] Game created: {
-  gameId: 'OKUGWN',
-  playerId: '1761781185665_vl9d6ydrsg',
+[API CREATE] Generated: { inviteCode: '8H236V', playerId: '1761783011659_2beie9g3094' }
+[API CREATE] Success, returning: {
+  game: {
+    id: '8H236V',
+    mode: 'classic3',
+    status: 'waiting',
+    created_at: '2025-10-30T00:10:11.659Z',
+    started_at: null,
+    finished_at: null,
+    current_turn: null,
+    winner_id: null
+  },
+  player_id: '1761783011659_2beie9g3094',
+  invite_code: '8H236V',
+  player: {
+    id: '1761783011659_2beie9g3094',
+    game_id: '8H236V',
+    player_number: 1,
+    player_name: 'Test Player',
+    joined_at: '2025-10-30T00:10:11.659Z',
+    is_ai: false
+  }
+}
+ POST /api/game/create 201 in 90ms
+ POST /api/game/create 201 in 85ms
+[MIDDLEWARE] API Request: {
+  method: 'POST',
+  url: 'http://localhost:3000/api/game/join',
+  pathname: '/api/game/join',
+  timestamp: '2025-10-30T00:10:17.517Z'
+}
+ ✓ Compiled /api/game/join in 47ms (33 modules)
+[API JOIN] Function called
+[API JOIN] Body parsed: { invite_code: 'ABC123', player_name: 'Test Player 2' }
+[API JOIN] Params: { invite_code: 'ABC123', player_name: 'Test Player 2' }
+[API JOIN] Generated: { gameId: 'ABC123', playerId: '1761783017603_bhz3m173cih' }
+[API JOIN] Success, returning: {
+  player: {
+    id: '1761783017603_bhz3m173cih',
+    game_id: 'ABC123',
+    player_number: 2,
+    player_name: 'Test Player 2',
+    joined_at: '2025-10-30T00:10:17.603Z',
+    is_ai: false
+  },
+  game_id: 'ABC123',
   mode: 'classic3'
 }
- POST /api/game/create 201 in 12ms
-[API] Join game request: { invite_code: 'ABC123', player_name: 'TestPlayer2' }
-[API] Player joined game: {
-  gameId: 'ABC123',
-  playerId: '1761781185689_cqo17vcoi8j',
-  invite_code: 'ABC123'
+ POST /api/game/join 200 in 91ms
+ POST /api/game/join 200 in 85ms
+[MIDDLEWARE] API Request: {
+  method: 'GET',
+  url: 'http://localhost:3000/api/game/state?game_id=TEST123',
+  pathname: '/api/game/state',
+  timestamp: '2025-10-30T00:10:23.583Z'
 }
- POST /api/game/join 200 in 9ms
-[API] Get game state: { gameId: 'test123' }
- GET /api/game/state?game_id=test123 200 in 7ms
-[API] Make move: {
-  game_id: 'test123',
-  player_id: 'player1',
-  column_index: 0,
-  row_index: 0
+ ✓ Compiled /api/game/state in 129ms (35 modules)
+[API STATE] Function called
+[API STATE] Params: { gameId: 'TEST123' }
+[API STATE] Generating game state for: TEST123
+[API STATE] Success, returning game state
+ GET /api/game/state?game_id=TEST123 200 in 175ms
+ GET /api/game/state?game_id=TEST123 200 in 170ms
+[MIDDLEWARE] API Request: {
+  method: 'POST',
+  url: 'http://localhost:3000/api/game/create',
+  pathname: '/api/game/create',
+  timestamp: '2025-10-30T00:10:35.599Z'
 }
- POST /api/game/move 200 in 7ms
-[API] Send message: { game_id: 'test123', player_id: 'player1', text: 'Test message' }
- POST /api/chat/send 200 in 7ms
-[API] List messages: { gameId: 'test123', since: null }
- GET /api/chat/list?game_id=test123 200 in 6ms
-[API] Create game request: { mode: 'invalid', player_name: 'Test', is_ai_opponent: undefined }
- POST /api/game/create 400 in 10ms
-[API] Create game request: { mode: 'classic3', player_name: undefined, is_ai_opponent: undefined }
- POST /api/game/create 400 in 6ms
-[API] Join game request: { invite_code: 'ABC', player_name: 'Test' }
- POST /api/game/join 400 in 9ms
-[API] Create game request: {
-  mode: 'gomoku',
-  player_name: 'GomokuPlayer',
-  is_ai_opponent: undefined
+[API CREATE] Function called
+[API CREATE] Body parsed: { mode: 'invalid' }
+[API CREATE] Params: { mode: 'invalid', player_name: undefined, is_ai_opponent: undefined }
+[API CREATE] Invalid mode: invalid
+ POST /api/game/create 400 in 27ms
+ POST /api/game/create 400 in 18ms
+[MIDDLEWARE] API Request: {
+  method: 'POST',
+  url: 'http://localhost:3000/api/game/create',
+  pathname: '/api/game/create',
+  timestamp: '2025-10-30T00:10:41.044Z'
 }
-[API] Game created: {
-  gameId: 'XYFPP5',
-  playerId: '1761781248716_uyfzhypm7vq',
-  mode: 'gomoku'
+[API CREATE] Function called
+[API CREATE] Failed to parse body: SyntaxError: Unexpected token 'i', "invalid json" is not valid JSON
+    at JSON.parse (<anonymous>)
+    at parseJSONFromBytes (node:internal/deps/undici/undici:5738:19)
+    at successSteps (node:internal/deps/undici/undici:5719:27)
+    at fullyReadBody (node:internal/deps/undici/undici:4609:9)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async consumeBody (node:internal/deps/undici/undici:5728:7)
+    at async POST (webpack-internal:///(rsc)/./app/api/game/create/route.ts:24:20)
+    at async /home/engine/project/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:53238
+    at async e_.execute (/home/engine/project/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:44501)
+    at async e_.handle (/home/engine/project/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:54492)
+    at async doRender (/home/engine/project/node_modules/next/dist/server/base-server.js:1372:42)
+    at async cacheEntry.responseCache.get.routeKind (/home/engine/project/node_modules/next/dist/server/base-server.js:1594:28)
+    at async DevServer.renderToResponseWithComponentsImpl (/home/engine/project/node_modules/next/dist/server/base-server.js:1502:28)
+    at async DevServer.renderPageComponent (/home/engine/project/node_modules/next/dist/server/base-server.js:1919:24)
+    at async DevServer.renderToResponseImpl (/home/engine/project/node_modules/next/dist/server/base-server.js:1957:32)
+    at async DevServer.pipeImpl (/home/engine/project/node_modules/next/dist/server/base-server.js:915:25)
+    at async NextNodeServer.handleCatchallRenderRequest (/home/engine/project/node_modules/next/dist/server/next-server.js:272:17)
+    at async DevServer.handleRequestImpl (/home/engine/project/node_modules/next/dist/server/base-server.js:811:17)
+    at async /home/engine/project/node_modules/next/dist/server/dev/next-dev-server.js:339:20
+    at async Span.traceAsyncFn (/home/engine/project/node_modules/next/dist/trace/trace.js:154:20)
+    at async DevServer.handleRequest (/home/engine/project/node_modules/next/dist/server/dev/next-dev-server.js:336:24)
+    at async invokeRender (/home/engine/project/node_modules/next/dist/server/lib/router-server.js:174:21)
+    at async handleRequest (/home/engine/project/node_modules/next/dist/server/lib/router-server.js:353:24)
+    at async requestHandlerImpl (/home/engine/project/node_modules/next/dist/server/lib/router-server.js:377:13)
+    at async Server.requestListener (/home/engine/project/node_modules/next/dist/server/lib/start-server.js:141:13)
+ POST /api/game/create 400 in 19ms
+ POST /api/game/create 400 in 12ms
+[MIDDLEWARE] API Request: {
+  method: 'GET',
+  url: 'http://localhost:3000/api/game/create',
+  pathname: '/api/game/create',
+  timestamp: '2025-10-30T00:10:46.809Z'
 }
- POST /api/game/create 201 in 7ms
- GET /api 200 in 7ms
-[API] Create game request: {
-  mode: 'classic3',
-  player_name: 'TestPlayer',
-  is_ai_opponent: undefined
+ GET /api/game/create 405 in 11ms
+ GET /api/game/create 405 in 5ms
+[MIDDLEWARE] API Request: {
+  method: 'GET',
+  url: 'http://localhost:3000/api/game/create',
+  pathname: '/api/game/create',
+  timestamp: '2025-10-30T00:10:52.431Z'
 }
-[API] Game created: {
-  gameId: '6D32A7',
-  playerId: '1761781294157_r7ymoana11',
-  mode: 'classic3'
-}
- POST /api/game/create 201 in 6ms
-[API] Join game request: { invite_code: 'ABC123', player_name: 'TestPlayer2' }
-[API] Player joined game: {
-  gameId: 'ABC123',
-  playerId: '1761781294176_h7xq1opcwi8',
-  invite_code: 'ABC123'
-}
- POST /api/game/join 200 in 6ms
-[API] Get game state: { gameId: 'test123' }
- GET /api/game/state?game_id=test123 200 in 5ms
-[API] Make move: {
-  game_id: 'test123',
-  player_id: 'player1',
-  column_index: 0,
-  row_index: 0
-}
- POST /api/game/move 200 in 5ms
-[API] Send message: { game_id: 'test123', player_id: 'player1', text: 'Test message' }
- POST /api/chat/send 200 in 5ms
-[API] List messages: { gameId: 'test123', since: null }
- GET /api/chat/list?game_id=test123 200 in 5ms
+ GET /api/game/create 405 in 12ms
+ GET /api/game/create 405 in 7ms
 [?25h

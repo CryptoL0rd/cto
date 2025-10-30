@@ -1,5 +1,3 @@
-import { NextResponse } from 'next/server';
-
 function generateInviteCode(): string {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let code = '';
@@ -15,28 +13,48 @@ function generateId(): string {
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const { mode, player_name, is_ai_opponent } = body;
-
-    console.log('[API] Create game request:', { mode, player_name, is_ai_opponent });
-
-    if (!mode || !['classic3', 'gomoku'].includes(mode)) {
-      return NextResponse.json(
-        { error: 'Invalid game mode. Must be classic3 or gomoku' },
+    console.log('[API CREATE] Function called');
+    
+    // Parse body
+    let body;
+    try {
+      body = await request.json();
+      console.log('[API CREATE] Body parsed:', body);
+    } catch (e) {
+      console.error('[API CREATE] Failed to parse body:', e);
+      return Response.json(
+        { error: 'Invalid JSON body' },
         { status: 400 }
       );
     }
 
+    const { mode, player_name, is_ai_opponent } = body;
+    console.log('[API CREATE] Params:', { mode, player_name, is_ai_opponent });
+
+    // Validate mode
+    if (!mode || !['classic3', 'gomoku', 'gomoku5'].includes(mode)) {
+      console.log('[API CREATE] Invalid mode:', mode);
+      return Response.json(
+        { error: 'Invalid game mode. Must be classic3, gomoku, or gomoku5' },
+        { status: 400 }
+      );
+    }
+
+    // Validate player name
     if (!player_name || typeof player_name !== 'string') {
-      return NextResponse.json(
+      console.log('[API CREATE] Invalid player name');
+      return Response.json(
         { error: 'Player name is required' },
         { status: 400 }
       );
     }
 
+    // Generate IDs
     const inviteCode = generateInviteCode();
     const playerId = generateId();
     const now = new Date().toISOString();
+
+    console.log('[API CREATE] Generated:', { inviteCode, playerId });
 
     const game = {
       id: inviteCode,
@@ -58,28 +76,29 @@ export async function POST(request: Request) {
       is_ai: false,
     };
 
-    console.log('[API] Game created:', { gameId: inviteCode, playerId, mode });
+    const responseData = {
+      game,
+      player_id: playerId,
+      invite_code: inviteCode,
+      player,
+    };
 
-    return NextResponse.json(
-      {
-        game,
-        player_id: playerId,
-        invite_code: inviteCode,
-        player,
+    console.log('[API CREATE] Success, returning:', responseData);
+
+    return Response.json(responseData, {
+      status: 201,
+      headers: {
+        'Content-Type': 'application/json',
       },
-      {
-        status: 201,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    );
+    });
   } catch (error) {
-    console.error('[API] Error creating game:', error);
-    return NextResponse.json(
+    console.error('[API CREATE] Unexpected error:', error);
+    console.error('[API CREATE] Stack:', error instanceof Error ? error.stack : 'No stack');
+    
+    return Response.json(
       { 
-        error: 'Failed to create game',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        error: 'Internal server error',
+        message: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     );
@@ -87,3 +106,4 @@ export async function POST(request: Request) {
 }
 
 export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';

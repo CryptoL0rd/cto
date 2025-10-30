@@ -1,40 +1,59 @@
-import { NextResponse } from 'next/server';
-
 function generateId(): string {
   return `${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
 }
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    console.log('[API JOIN] Function called');
+    
+    // Parse body
+    let body;
+    try {
+      body = await request.json();
+      console.log('[API JOIN] Body parsed:', body);
+    } catch (e) {
+      console.error('[API JOIN] Failed to parse body:', e);
+      return Response.json(
+        { error: 'Invalid JSON body' },
+        { status: 400 }
+      );
+    }
+
     const { invite_code, player_name } = body;
+    console.log('[API JOIN] Params:', { invite_code, player_name });
 
-    console.log('[API] Join game request:', { invite_code, player_name });
-
+    // Validate invite code
     if (!invite_code || typeof invite_code !== 'string') {
-      return NextResponse.json(
+      console.log('[API JOIN] Missing invite code');
+      return Response.json(
         { error: 'Invite code is required' },
         { status: 400 }
       );
     }
 
     if (invite_code.length !== 6) {
-      return NextResponse.json(
+      console.log('[API JOIN] Invalid invite code length:', invite_code.length);
+      return Response.json(
         { error: 'Invalid invite code format. Must be 6 characters' },
         { status: 400 }
       );
     }
 
+    // Validate player name
     if (!player_name || typeof player_name !== 'string') {
-      return NextResponse.json(
+      console.log('[API JOIN] Invalid player name');
+      return Response.json(
         { error: 'Player name is required' },
         { status: 400 }
       );
     }
 
-    const gameId = invite_code;
+    // Generate IDs
+    const gameId = invite_code.toUpperCase();
     const playerId = generateId();
     const now = new Date().toISOString();
+
+    console.log('[API JOIN] Generated:', { gameId, playerId });
 
     const player = {
       id: playerId,
@@ -45,27 +64,28 @@ export async function POST(request: Request) {
       is_ai: false,
     };
 
-    console.log('[API] Player joined game:', { gameId, playerId, invite_code });
+    const responseData = {
+      player,
+      game_id: gameId,
+      mode: 'classic3',
+    };
 
-    return NextResponse.json(
-      {
-        player,
-        game_id: gameId,
-        mode: 'classic3',
+    console.log('[API JOIN] Success, returning:', responseData);
+
+    return Response.json(responseData, {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
       },
-      {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    );
+    });
   } catch (error) {
-    console.error('[API] Error joining game:', error);
-    return NextResponse.json(
+    console.error('[API JOIN] Unexpected error:', error);
+    console.error('[API JOIN] Stack:', error instanceof Error ? error.stack : 'No stack');
+    
+    return Response.json(
       { 
-        error: 'Failed to join game',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        error: 'Internal server error',
+        message: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     );
@@ -73,3 +93,4 @@ export async function POST(request: Request) {
 }
 
 export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
