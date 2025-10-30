@@ -59,11 +59,16 @@ export default function Home() {
         localStorage.setItem('player_id', data.player_id);
       }
       
-      if (data.invite_code) {
-        localStorage.setItem(`invite_code_${data.game.id}`, data.invite_code);
+      if (data.game?.invite_code) {
+        localStorage.setItem(`invite_code_${data.game.id}`, data.game.invite_code);
+      }
+      
+      if (data.game) {
+        localStorage.setItem(`game_${data.game.id}`, JSON.stringify(data.game));
       }
       
       setShowModeModal(false);
+      console.log('[Frontend] Redirecting to /game/' + data.game.id);
       router.push(`/game/${data.game.id}`);
     } catch (err) {
       console.error('[Frontend] Exception:', err);
@@ -116,9 +121,21 @@ export default function Home() {
       const data = await response.json();
       console.log('[Frontend] Success data:', data);
       
-      localStorage.setItem('player_id', data.player.id);
+      if (data.player_id) {
+        localStorage.setItem('player_id', data.player_id);
+      }
+      
+      if (data.game?.invite_code) {
+        localStorage.setItem(`invite_code_${data.game.id}`, data.game.invite_code);
+      }
+      
+      if (data.game) {
+        localStorage.setItem(`game_${data.game.id}`, JSON.stringify(data.game));
+      }
+      
       setShowJoinModal(false);
-      router.push(`/game/${data.game_id}`);
+      console.log('[Frontend] Redirecting to /game/' + data.game.id);
+      router.push(`/game/${data.game.id}`);
     } catch (err) {
       console.error('[Frontend] Exception:', err);
       setError(err instanceof Error ? err.message : 'Не удалось подключиться');

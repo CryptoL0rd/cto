@@ -50,14 +50,16 @@ export async function POST(request: Request) {
     }
 
     // Generate IDs
+    const gameId = `game_${generateId()}`;
     const inviteCode = generateInviteCode();
     const playerId = generateId();
     const now = new Date().toISOString();
 
-    console.log('[API CREATE] Generated:', { inviteCode, playerId });
+    console.log('[API CREATE] Generated:', { gameId, inviteCode, playerId });
 
     const game = {
-      id: inviteCode,
+      id: gameId,
+      invite_code: inviteCode,
       mode,
       status: is_ai_opponent ? 'active' : 'waiting',
       created_at: now,
@@ -69,7 +71,7 @@ export async function POST(request: Request) {
 
     const player = {
       id: playerId,
-      game_id: inviteCode,
+      game_id: gameId,
       player_number: 1,
       player_name,
       joined_at: now,
@@ -79,7 +81,6 @@ export async function POST(request: Request) {
     const responseData = {
       game,
       player_id: playerId,
-      invite_code: inviteCode,
       player,
     };
 
