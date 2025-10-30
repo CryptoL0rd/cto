@@ -143,7 +143,7 @@ export function CreateGameComponent() {
       savePlayerId(response.player_id);
 
       // Navigate to game (example - would use Next.js router in real app)
-      console.log('Game created:', response.invite_code);
+      console.log('Game created:', response.game.invite_code);
       console.log('Player ID:', response.player_id);
     } catch (error) {
       console.error('Failed to create game:', error);
@@ -170,11 +170,11 @@ export function JoinGameComponent({ inviteCode }: { inviteCode: string }) {
       });
 
       // Save player ID to localStorage
-      savePlayerId(response.player.id);
+      savePlayerId(response.player_id);
 
       // Navigate to game
-      console.log('Joined game:', response.game_id);
-      console.log('Player ID:', response.player.id);
+      console.log('Joined game:', response.game.id);
+      console.log('Player ID:', response.player_id);
     } catch (error) {
       console.error('Failed to join game:', error);
     }

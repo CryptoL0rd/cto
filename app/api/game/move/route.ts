@@ -1,4 +1,5 @@
 import { getGameState, setGameState, createGameState } from '../gameState';
+import { broadcastGameUpdate } from '@/server/websocket';
 
 // Check for winner in Classic 3x3
 function checkWinner(board: (string | null)[][]): 'X' | 'O' | null {
@@ -202,6 +203,14 @@ export async function POST(request: Request) {
 
     // Save updated state
     setGameState(game_id, gameState);
+
+    // Broadcast game state update via WebSocket
+    try {
+      broadcastGameUpdate(game_id, gameState);
+    } catch (error) {
+      console.error('[API MOVE] Failed to broadcast WebSocket update:', error);
+      // Don't fail the request if WebSocket broadcast fails
+    }
 
     const responseData = {
       move,
