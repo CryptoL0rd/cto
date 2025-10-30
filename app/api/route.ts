@@ -1,7 +1,7 @@
-import { NextResponse } from 'next/server';
-
 export async function GET() {
-  return NextResponse.json({
+  console.log('[API ROOT] Health check called');
+  
+  return Response.json({
     ok: true,
     version: '1.0.0',
     timestamp: new Date().toISOString(),
@@ -9,3 +9,4 @@ export async function GET() {
 }
 
 export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
