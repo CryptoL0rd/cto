@@ -1,3 +1,5 @@
+import { getGameState, createGameState } from '../gameState';
+
 export async function GET(request: Request) {
   try {
     console.log('[API STATE] Function called');
@@ -16,57 +18,17 @@ export async function GET(request: Request) {
       );
     }
 
-    // Generate mock game state
-    const now = new Date().toISOString();
-    const createdAt = new Date(Date.now() - 120000).toISOString();
-    const startedAt = new Date(Date.now() - 60000).toISOString();
+    // Get or create game state
+    let gameState = getGameState(gameId);
+    
+    if (!gameState) {
+      console.log('[API STATE] Creating new game state for:', gameId);
+      gameState = createGameState(gameId);
+    }
 
-    console.log('[API STATE] Generating game state for:', gameId);
+    console.log('[API STATE] Returning game state with', gameState.moves.length, 'moves');
 
-    const game = {
-      id: gameId,
-      invite_code: 'MOCK01',
-      mode: 'classic3',
-      status: 'active',
-      created_at: createdAt,
-      started_at: startedAt,
-      finished_at: null,
-      current_turn: 1,
-      winner_id: null,
-    };
-
-    const players = [
-      {
-        id: 'player1',
-        game_id: gameId,
-        player_number: 1,
-        player_name: 'Player 1',
-        joined_at: createdAt,
-        is_ai: false,
-      },
-      {
-        id: 'player2',
-        game_id: gameId,
-        player_number: 2,
-        player_name: 'Player 2',
-        joined_at: startedAt,
-        is_ai: false,
-      },
-    ];
-
-    const moves: any[] = [];
-    const messages: any[] = [];
-
-    const responseData = {
-      game,
-      players,
-      moves,
-      messages,
-    };
-
-    console.log('[API STATE] Success, returning game state');
-
-    return Response.json(responseData, {
+    return Response.json(gameState, {
       headers: {
         'Content-Type': 'application/json',
       },
