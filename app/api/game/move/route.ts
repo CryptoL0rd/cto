@@ -1,44 +1,28 @@
 import { getGameState, setGameState, createGameState } from '../gameState';
-import { broadcastGameUpdate } from '@/server/websocket';
+import { broadcastGameUpdate } from '@/server/pusher';
 
 // Check for winner in Classic 3x3
 function checkWinner(board: (string | null)[][]): 'X' | 'O' | null {
   // Check rows
   for (let row = 0; row < 3; row++) {
-    if (
-      board[row][0] &&
-      board[row][0] === board[row][1] &&
-      board[row][1] === board[row][2]
-    ) {
+    if (board[row][0] && board[row][0] === board[row][1] && board[row][1] === board[row][2]) {
       return board[row][0] as 'X' | 'O';
     }
   }
 
   // Check columns
   for (let col = 0; col < 3; col++) {
-    if (
-      board[0][col] &&
-      board[0][col] === board[1][col] &&
-      board[1][col] === board[2][col]
-    ) {
+    if (board[0][col] && board[0][col] === board[1][col] && board[1][col] === board[2][col]) {
       return board[0][col] as 'X' | 'O';
     }
   }
 
   // Check diagonals
-  if (
-    board[0][0] &&
-    board[0][0] === board[1][1] &&
-    board[1][1] === board[2][2]
-  ) {
+  if (board[0][0] && board[0][0] === board[1][1] && board[1][1] === board[2][2]) {
     return board[0][0] as 'X' | 'O';
   }
 
-  if (
-    board[0][2] &&
-    board[0][2] === board[1][1] &&
-    board[1][1] === board[2][0]
-  ) {
+  if (board[0][2] && board[0][2] === board[1][1] && board[1][1] === board[2][0]) {
     return board[0][2] as 'X' | 'O';
   }
 
@@ -79,7 +63,7 @@ function isBoardFull(board: (string | null)[][]): boolean {
 export async function POST(request: Request) {
   try {
     console.log('[API MOVE] Function called');
-    
+
     // Parse body
     let body;
     try {
@@ -87,10 +71,7 @@ export async function POST(request: Request) {
       console.log('[API MOVE] Body parsed:', body);
     } catch (e) {
       console.error('[API MOVE] Failed to parse body:', e);
-      return Response.json(
-        { error: 'Invalid JSON body' },
-        { status: 400 }
-      );
+      return Response.json({ error: 'Invalid JSON body' }, { status: 400 });
     }
 
     const { game_id, player_id, column_index, row_index } = body;
@@ -99,10 +80,7 @@ export async function POST(request: Request) {
     // Validate required fields
     if (!game_id || !player_id) {
       console.log('[API MOVE] Missing required fields');
-      return Response.json(
-        { error: 'game_id and player_id are required' },
-        { status: 400 }
-      );
+      return Response.json({ error: 'game_id and player_id are required' }, { status: 400 });
     }
 
     // Validate move coordinates
@@ -116,7 +94,7 @@ export async function POST(request: Request) {
 
     // Get or create game state
     let gameState = getGameState(game_id);
-    
+
     if (!gameState) {
       // Initialize new game state if it doesn't exist
       gameState = createGameState(game_id);
@@ -124,35 +102,23 @@ export async function POST(request: Request) {
 
     // Check if game is already finished
     if (gameState.game.status === 'completed') {
-      return Response.json(
-        { error: 'Game is already finished' },
-        { status: 400 }
-      );
+      return Response.json({ error: 'Game is already finished' }, { status: 400 });
     }
 
     // Validate it's the player's turn
     const player = gameState.players.find((p: any) => p.id === player_id);
     if (!player) {
-      return Response.json(
-        { error: 'Player not found in game' },
-        { status: 400 }
-      );
+      return Response.json({ error: 'Player not found in game' }, { status: 400 });
     }
 
     if (player.player_number !== gameState.game.current_turn) {
-      return Response.json(
-        { error: 'Not your turn' },
-        { status: 400 }
-      );
+      return Response.json({ error: 'Not your turn' }, { status: 400 });
     }
 
     // Build current board and check if position is occupied
     const board = buildBoardFromMoves(gameState.moves, gameState.players);
     if (board[row_index][column_index] !== null) {
-      return Response.json(
-        { error: 'Position already occupied' },
-        { status: 400 }
-      );
+      return Response.json({ error: 'Position already occupied' }, { status: 400 });
     }
 
     // Create move
@@ -229,9 +195,9 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('[API MOVE] Unexpected error:', error);
     console.error('[API MOVE] Stack:', error instanceof Error ? error.stack : 'No stack');
-    
+
     return Response.json(
-      { 
+      {
         error: 'Internal server error',
         message: error instanceof Error ? error.message : 'Unknown error',
       },

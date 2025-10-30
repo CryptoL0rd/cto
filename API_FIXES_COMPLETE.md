@@ -3,6 +3,7 @@
 ## Problem Diagnosed
 
 The API endpoints were returning **405 Method Not Allowed** errors with the following symptoms:
+
 - `x-matched-path: "/500"` - requests were being redirected to the error page
 - `content-type: "text/html; charset=utf-8"` - returning HTML instead of JSON
 - Status: **405** but actually representing **500 Internal Server Error**
@@ -17,6 +18,7 @@ The API endpoints were returning **405 Method Not Allowed** errors with the foll
 ## Solution Implemented
 
 ### 1. Removed Python API Directory ✅
+
 - Deleted `/api/` directory containing FastAPI code
 - Removed Python-related files: `requirements.txt`, `test_backend.py`, etc.
 - Vercel is configured for Next.js only (`vercel.json`)
@@ -24,6 +26,7 @@ The API endpoints were returning **405 Method Not Allowed** errors with the foll
 ### 2. Rewrote All API Routes with Improvements ✅
 
 All routes now include:
+
 - **Extensive logging** at every step with `[API ENDPOINT_NAME]` prefixes
 - **Explicit error handling** with try-catch blocks
 - **Runtime configuration**: `export const runtime = 'nodejs'`
@@ -34,46 +37,55 @@ All routes now include:
 ### 3. Created Debug Endpoint ✅
 
 New endpoint `/api/debug` for diagnostics:
+
 - **GET**: Returns request details, headers, environment variables
 - **POST**: Echoes back the request body for testing
 
 ### 4. Added Middleware for Logging ✅
 
 Created `/middleware.ts` to log all API requests:
+
 - Logs method, URL, pathname, and timestamp
 - Helps diagnose issues in production
 
 ### 5. Updated API Routes
 
 #### `/app/api/route.ts` - Health Check
+
 - GET returns version and timestamp
 - Confirms API is operational
 
 #### `/app/api/game/create/route.ts` - Create Game
+
 - POST with `{ mode, player_name, is_ai_opponent }`
 - Validates mode: `classic3`, `gomoku`, `gomoku5`
 - Generates invite code and player ID
 - Returns game object and player info
 
 #### `/app/api/game/join/route.ts` - Join Game
+
 - POST with `{ invite_code, player_name }`
 - Validates 6-character invite code
 - Returns player object and game info
 
 #### `/app/api/game/state/route.ts` - Get Game State
+
 - GET with `?game_id=XXX`
 - Returns game, players, moves, and messages
 
 #### `/app/api/game/move/route.ts` - Make Move
+
 - POST with `{ game_id, player_id, column_index, row_index }`
 - Validates coordinates
 - Returns move object and game status
 
 #### `/app/api/chat/send/route.ts` - Send Message
+
 - POST with `{ game_id, player_id, text }`
 - Returns message object
 
 #### `/app/api/chat/list/route.ts` - List Messages
+
 - GET with `?game_id=XXX&since=timestamp`
 - Returns array of messages
 
@@ -107,6 +119,7 @@ All endpoints tested and working:
 ### Logging ✅
 
 All requests logged with:
+
 - `[MIDDLEWARE]` prefix for incoming requests
 - `[API ENDPOINT]` prefix for route handlers
 - Request parameters, parsed body, generated IDs
@@ -128,6 +141,7 @@ All requests logged with:
 ## Files Changed
 
 ### Removed
+
 - `/api/` (entire Python API directory)
 - `requirements.txt`
 - `test_backend.py`
@@ -135,11 +149,13 @@ All requests logged with:
 - `verify_implementation.py`
 
 ### Created
+
 - `/middleware.ts` - Request logging middleware
 - `/app/api/debug/route.ts` - Debug endpoint
 - `/test_api.sh` - Comprehensive API test script
 
 ### Modified
+
 - `/app/api/route.ts` - Health check with logging
 - `/app/api/game/create/route.ts` - Enhanced with logging and error handling
 - `/app/api/game/join/route.ts` - Enhanced with logging and error handling
@@ -201,6 +217,7 @@ Detailed logging helps diagnose issues in production where we can't use a debugg
 ## Status: COMPLETE ✅
 
 All acceptance criteria met. API endpoints are working correctly with proper:
+
 - Status codes (200, 201, 400, 405, 500)
 - Content-Type headers (application/json)
 - Error handling and validation

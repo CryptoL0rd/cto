@@ -10,9 +10,15 @@ export default function GamePage() {
   const params = useParams();
   const router = useRouter();
   const gameId = params.id as string;
-  
+
   const { playerId, isLoading: playerLoading } = useLocalPlayer();
-  const { gameState, isLoading: gameLoading, error, refetch, isConnected } = useGameStateWebSocket(gameId, playerId);
+  const {
+    gameState,
+    isLoading: gameLoading,
+    error,
+    refetch,
+    isConnected,
+  } = useGameStateWebSocket(gameId, playerId);
 
   if (playerLoading || gameLoading) {
     return (
@@ -58,26 +64,24 @@ export default function GamePage() {
         {/* Header */}
         <div className="bg-slate-900/40 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6">
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-white mb-4">
-              Крестики-Нолики 3×3
-            </h1>
-            
+            <h1 className="text-3xl font-bold text-white mb-4">Крестики-Нолики 3×3</h1>
+
             <div className="flex items-center justify-center gap-6 text-sm flex-wrap">
               {game.invite_code && (
                 <div>
                   <span className="text-gray-400">Код: </span>
-                  <code className="text-cosmic-400 font-mono font-bold">
-                    {game.invite_code}
-                  </code>
+                  <code className="text-cosmic-400 font-mono font-bold">{game.invite_code}</code>
                 </div>
               )}
-              
+
               {currentPlayer && (
                 <div>
                   <span className="text-gray-400">Вы: </span>
-                  <span className={`font-bold ${
-                    currentPlayer.player_number === 1 ? 'text-cosmic-400' : 'text-nebula-400'
-                  }`}>
+                  <span
+                    className={`font-bold ${
+                      currentPlayer.player_number === 1 ? 'text-cosmic-400' : 'text-nebula-400'
+                    }`}
+                  >
                     {currentPlayer.player_name} ({currentPlayer.player_number === 1 ? 'X' : 'O'})
                   </span>
                 </div>
@@ -86,9 +90,11 @@ export default function GamePage() {
               {opponent && (
                 <div>
                   <span className="text-gray-400">Противник: </span>
-                  <span className={`font-bold ${
-                    opponent.player_number === 1 ? 'text-cosmic-400' : 'text-nebula-400'
-                  }`}>
+                  <span
+                    className={`font-bold ${
+                      opponent.player_number === 1 ? 'text-cosmic-400' : 'text-nebula-400'
+                    }`}
+                  >
                     {opponent.player_name} ({opponent.player_number === 1 ? 'X' : 'O'})
                   </span>
                 </div>
@@ -96,7 +102,10 @@ export default function GamePage() {
 
               {game.winner_id && (
                 <div className="text-galaxy-400 font-bold">
-                  🏆 {game.winner_id === playerId ? 'Вы победили!' : `${opponent?.player_name} победил!`}
+                  🏆{' '}
+                  {game.winner_id === playerId
+                    ? 'Вы победили!'
+                    : `${opponent?.player_name} победил!`}
                 </div>
               )}
             </div>
@@ -108,12 +117,8 @@ export default function GamePage() {
           {isWaiting ? (
             <div className="text-center py-16 space-y-4">
               <div className="text-6xl mb-4">⏳</div>
-              <h2 className="text-2xl font-bold text-white">
-                Ожидание второго игрока...
-              </h2>
-              <p className="text-gray-400">
-                Поделитесь кодом приглашения с другом
-              </p>
+              <h2 className="text-2xl font-bold text-white">Ожидание второго игрока...</h2>
+              <p className="text-gray-400">Поделитесь кодом приглашения с другом</p>
               {game.invite_code && (
                 <div className="mt-4">
                   <InviteCodeDisplay code={game.invite_code} />
@@ -121,11 +126,7 @@ export default function GamePage() {
               )}
             </div>
           ) : (isActive || isFinished) && playerId ? (
-            <GameBoard3x3
-              gameState={gameState}
-              playerId={playerId}
-              onMoveComplete={refetch}
-            />
+            <GameBoard3x3 gameState={gameState} playerId={playerId} onMoveComplete={refetch} />
           ) : (
             <div className="text-center py-16 text-gray-400">
               <div className="text-6xl mb-4">❓</div>

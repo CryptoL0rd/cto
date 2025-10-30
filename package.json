@@ -4,11 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "dev:ws": "tsx server/index.ts",
-    "dev:all": "concurrently \"npm run dev\" \"npm run dev:ws\"",
     "build": "next build",
     "start": "next start",
-    "start:ws": "tsx server/index.ts",
     "lint": "next lint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -19,6 +16,8 @@
   "dependencies": {
     "clsx": "^2.1.1",
     "next": "14.2.0",
+    "pusher": "^5.2.0",
+    "pusher-js": "^8.4.0",
     "react": "^18.3.0",
     "react-dom": "^18.3.0",
     "tailwind-merge": "^3.3.1",

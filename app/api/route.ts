@@ -1,6 +1,6 @@
 export async function GET() {
   console.log('[API ROOT] Health check called');
-  
+
   return Response.json({
     ok: true,
     version: '1.0.0',

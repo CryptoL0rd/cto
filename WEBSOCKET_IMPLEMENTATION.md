@@ -31,12 +31,14 @@ Implemented WebSocket-based real-time communication that:
 A standalone WebSocket server that runs on port 3001 (configurable via `WS_PORT` environment variable).
 
 **Features**:
+
 - Room-based subscriptions (clients subscribe to specific game IDs)
 - Automatic heartbeat/ping-pong to detect dead connections
 - Reconnection handling
 - Broadcast updates to all clients in a game room
 
 **Message Types**:
+
 - `subscribe`: Client subscribes to game updates
 - `unsubscribe`: Client unsubscribes from game updates
 - `game_update`: Server broadcasts game state changes
@@ -48,10 +50,12 @@ A standalone WebSocket server that runs on port 3001 (configurable via `WS_PORT`
 WebSocket broadcasts are triggered by API routes when state changes:
 
 **`/app/api/game/move/route.ts`**:
+
 - Broadcasts game state after a move is made
 - All connected clients in the game room receive instant updates
 
 **`/app/api/chat/send/route.ts`**:
+
 - Broadcasts new messages to all clients in the game room
 - Messages appear instantly for all players
 
@@ -64,6 +68,7 @@ Two hooks replace the old polling hooks:
 #### `useGameStateWebSocket(gameId, playerId)`
 
 Replaces `useGameState` hook:
+
 - Fetches initial game state via HTTP
 - Establishes WebSocket connection
 - Subscribes to game updates
@@ -71,6 +76,7 @@ Replaces `useGameState` hook:
 - Cleans up connection on unmount
 
 **Returns**:
+
 ```typescript
 {
   gameState: GameStateResponse | null,
@@ -84,6 +90,7 @@ Replaces `useGameState` hook:
 #### `useChatWebSocket(gameId)`
 
 Replaces `useChat` hook:
+
 - Fetches initial messages via HTTP
 - Establishes WebSocket connection
 - Subscribes to chat updates
@@ -91,6 +98,7 @@ Replaces `useChat` hook:
 - Deduplicates messages by ID
 
 **Returns**:
+
 ```typescript
 {
   messages: Message[],
@@ -105,6 +113,7 @@ Replaces `useChat` hook:
 ### Environment Variables
 
 **`.env.example`**:
+
 ```bash
 # WebSocket server port (default: 3001)
 WS_PORT=3001
@@ -119,6 +128,7 @@ NEXT_PUBLIC_WS_PORT=3001
 ### NPM Scripts
 
 **Development**:
+
 ```bash
 # Start Next.js only
 npm run dev
@@ -131,6 +141,7 @@ npm run dev:all
 ```
 
 **Production**:
+
 ```bash
 # Start Next.js
 npm run start
@@ -144,6 +155,7 @@ npm run start:ws
 ### In Game Page
 
 **Before (Polling)**:
+
 ```typescript
 import { useGameState } from '@/lib/hooks';
 
@@ -151,16 +163,20 @@ const { gameState, isLoading, error, refetch } = useGameState(gameId);
 ```
 
 **After (WebSocket)**:
+
 ```typescript
 import { useGameStateWebSocket } from '@/lib/useWebSocket';
 
-const { gameState, isLoading, error, refetch, isConnected } = 
-  useGameStateWebSocket(gameId, playerId);
+const { gameState, isLoading, error, refetch, isConnected } = useGameStateWebSocket(
+  gameId,
+  playerId
+);
 ```
 
 ### In Chat Component
 
 **Before (Polling)**:
+
 ```typescript
 import { useChat } from '@/lib/hooks';
 
@@ -168,11 +184,11 @@ const { messages, isLoading, error } = useChat(gameId);
 ```
 
 **After (WebSocket)**:
+
 ```typescript
 import { useChatWebSocket } from '@/lib/useWebSocket';
 
-const { messages, isLoading, error, isConnected } = 
-  useChatWebSocket(gameId);
+const { messages, isLoading, error, isConnected } = useChatWebSocket(gameId);
 ```
 
 ## Connection Flow
@@ -202,6 +218,7 @@ const { messages, isLoading, error, isConnected } =
 ### Local Development
 
 1. Start WebSocket server:
+
    ```bash
    npm run dev:ws
    ```
@@ -212,6 +229,7 @@ const { messages, isLoading, error, isConnected } =
    ```
 
 Or use the combined command:
+
 ```bash
 npm run dev:all
 ```
@@ -236,6 +254,7 @@ The WebSocket server needs to run alongside the Next.js application:
 ### Example PM2 Configuration
 
 **`ecosystem.config.js`**:
+
 ```javascript
 module.exports = {
   apps: [
@@ -264,18 +283,21 @@ module.exports = {
 ## Benefits
 
 ### Performance
+
 - ✅ No more constant polling requests
 - ✅ Reduced server load
 - ✅ Lower bandwidth usage
 - ✅ Faster state updates (instant vs 2-second delay)
 
 ### User Experience
+
 - ✅ Real-time updates (moves appear instantly)
 - ✅ No reload loops
 - ✅ Responsive gameplay
 - ✅ Connection status indicator
 
 ### Code Quality
+
 - ✅ Cleaner hook implementation
 - ✅ Proper cleanup and unmounting
 - ✅ Automatic reconnection
@@ -288,6 +310,7 @@ module.exports = {
 **Issue**: WebSocket connection fails to establish
 
 **Solution**:
+
 1. Check if WebSocket server is running: `npm run dev:ws`
 2. Verify port is not in use: `lsof -i :3001`
 3. Check firewall settings
@@ -298,6 +321,7 @@ module.exports = {
 **Issue**: Game state doesn't update in real-time
 
 **Solution**:
+
 1. Check browser console for WebSocket errors
 2. Verify client successfully subscribed (check console logs)
 3. Check server logs for broadcast errors
@@ -308,6 +332,7 @@ module.exports = {
 **Issue**: WebSocket connections not closed on navigation
 
 **Solution**:
+
 - Hooks automatically clean up on unmount
 - Check that components properly unmount when navigating away
 - Verify no duplicate hook calls (React Strict Mode can cause double calls in dev)
@@ -317,6 +342,7 @@ module.exports = {
 ### Old Polling Hooks (Deprecated)
 
 The old polling hooks in `/lib/hooks.ts` are still available but deprecated:
+
 - `useGameState(gameId, pollingInterval)` - Use `useGameStateWebSocket` instead
 - `useChat(gameId, pollingInterval)` - Use `useChatWebSocket` instead
 
@@ -325,12 +351,14 @@ These will continue to work as fallback but should be replaced with WebSocket ho
 ### Removed Code
 
 No code was removed - polling hooks remain as fallback. However, main components now use WebSocket:
+
 - `/app/game/[id]/page.tsx` - Uses `useGameStateWebSocket`
 - `/components/ChatPanel.tsx` - Uses `useChatWebSocket`
 
 ## Future Enhancements
 
 Potential improvements:
+
 - [ ] SSL/TLS support (wss://)
 - [ ] Authentication/authorization for WebSocket connections
 - [ ] Presence indicators (show online players)

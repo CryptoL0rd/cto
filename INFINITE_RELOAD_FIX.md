@@ -15,9 +15,10 @@ The game was experiencing an infinite reload loop due to:
 #### `/app/api/game/create/route.ts`
 
 **Before:**
+
 ```typescript
 const game = {
-  id: inviteCode,  // ❌ Wrong: reusing invite code as ID
+  id: inviteCode, // ❌ Wrong: reusing invite code as ID
   mode,
   // ...
 };
@@ -25,19 +26,20 @@ const game = {
 const responseData = {
   game,
   player_id: playerId,
-  invite_code: inviteCode,  // ❌ Wrong: at root level
+  invite_code: inviteCode, // ❌ Wrong: at root level
   player,
 };
 ```
 
 **After:**
+
 ```typescript
-const gameId = `game_${generateId()}`;  // ✅ Unique game ID
+const gameId = `game_${generateId()}`; // ✅ Unique game ID
 const inviteCode = generateInviteCode();
 
 const game = {
-  id: gameId,                // ✅ Unique game ID for routing
-  invite_code: inviteCode,   // ✅ Inside game object
+  id: gameId, // ✅ Unique game ID for routing
+  invite_code: inviteCode, // ✅ Inside game object
   mode,
   // ...
 };
@@ -45,26 +47,28 @@ const game = {
 const responseData = {
   game,
   player_id: playerId,
-  player,  // ✅ No invite_code at root
+  player, // ✅ No invite_code at root
 };
 ```
 
 #### `/app/api/game/join/route.ts`
 
 **Before:**
+
 ```typescript
-const gameId = invite_code.toUpperCase();  // ❌ Wrong: using invite code as game ID
+const gameId = invite_code.toUpperCase(); // ❌ Wrong: using invite code as game ID
 
 const responseData = {
   player,
-  game_id: gameId,  // ❌ Wrong structure
+  game_id: gameId, // ❌ Wrong structure
   mode: 'classic3',
 };
 ```
 
 **After:**
+
 ```typescript
-const gameId = `game_${generateId()}`;  // ✅ Unique game ID
+const gameId = `game_${generateId()}`; // ✅ Unique game ID
 const code = invite_code.toUpperCase();
 
 const game = {
@@ -75,7 +79,7 @@ const game = {
 };
 
 const responseData = {
-  game,          // ✅ Full game object
+  game, // ✅ Full game object
   player,
   player_id: playerId,
 };
@@ -86,6 +90,7 @@ const responseData = {
 #### `/app/page.tsx`
 
 **Enhanced handleCreateGame:**
+
 ```typescript
 const data = await response.json();
 
@@ -110,6 +115,7 @@ router.push(`/game/${data.game.id}`);
 ```
 
 **Enhanced handleJoinGame:**
+
 ```typescript
 const data = await response.json();
 
@@ -139,7 +145,7 @@ router.push(`/game/${data.game.id}`);
 ```typescript
 export interface Game {
   id: string;
-  invite_code?: string;  // ✅ Added optional invite_code
+  invite_code?: string; // ✅ Added optional invite_code
   mode: GameMode;
   status: GameStatus;
   // ...
@@ -148,11 +154,11 @@ export interface Game {
 export interface CreateGameResponse {
   game: Game;
   player_id: string;
-  player: Player;  // ✅ Changed from invite_code
+  player: Player; // ✅ Changed from invite_code
 }
 
 export interface JoinGameResponse {
-  game: Game;      // ✅ Full game object
+  game: Game; // ✅ Full game object
   player: Player;
   player_id: string;
 }

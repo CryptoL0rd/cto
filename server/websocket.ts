@@ -1,4 +1,6 @@
-// WebSocket server for real-time game state updates
+// DEPRECATED: WebSocket server for real-time game state updates
+// This file is no longer used. The application now uses Pusher (see server/pusher.ts)
+// Keeping this file for reference only
 import { WebSocketServer, WebSocket } from 'ws';
 import { IncomingMessage } from 'http';
 
