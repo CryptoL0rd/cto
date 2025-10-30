@@ -49,11 +49,24 @@ export async function POST(request: Request) {
     }
 
     // Generate IDs
-    const gameId = invite_code.toUpperCase();
+    const gameId = `game_${generateId()}`;
     const playerId = generateId();
     const now = new Date().toISOString();
+    const code = invite_code.toUpperCase();
 
-    console.log('[API JOIN] Generated:', { gameId, playerId });
+    console.log('[API JOIN] Generated:', { gameId, playerId, inviteCode: code });
+
+    const game = {
+      id: gameId,
+      invite_code: code,
+      mode: 'classic3',
+      status: 'active',
+      created_at: new Date(Date.now() - 60000).toISOString(),
+      started_at: now,
+      finished_at: null,
+      current_turn: 1,
+      winner_id: null,
+    };
 
     const player = {
       id: playerId,
@@ -65,9 +78,9 @@ export async function POST(request: Request) {
     };
 
     const responseData = {
+      game,
       player,
-      game_id: gameId,
-      mode: 'classic3',
+      player_id: playerId,
     };
 
     console.log('[API JOIN] Success, returning:', responseData);

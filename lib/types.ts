@@ -7,6 +7,7 @@ export type MessageType = 'chat' | 'system';
 
 export interface Game {
   id: string;
+  invite_code?: string;
   mode: GameMode;
   status: GameStatus;
   created_at: string;
@@ -54,7 +55,7 @@ export interface CreateGameRequest {
 export interface CreateGameResponse {
   game: Game;
   player_id: string;
-  invite_code: string;
+  player: Player;
 }
 
 export interface JoinGameRequest {
@@ -63,9 +64,9 @@ export interface JoinGameRequest {
 }
 
 export interface JoinGameResponse {
+  game: Game;
   player: Player;
-  game_id: string;
-  mode: GameMode;
+  player_id: string;
 }
 
 export interface MakeMoveRequest {

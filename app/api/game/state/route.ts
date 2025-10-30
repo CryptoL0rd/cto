@@ -25,6 +25,7 @@ export async function GET(request: Request) {
 
     const game = {
       id: gameId,
+      invite_code: 'MOCK01',
       mode: 'classic3',
       status: 'active',
       created_at: createdAt,
