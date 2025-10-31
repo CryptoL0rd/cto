@@ -1,6 +1,6 @@
 export async function GET(request: Request) {
   console.log('[API DEBUG] GET request received');
-  
+
   return Response.json({
     status: 'ok',
     timestamp: new Date().toISOString(),
@@ -17,11 +17,11 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   console.log('[API DEBUG] POST request received');
-  
+
   try {
     const body = await request.json();
     console.log('[API DEBUG] Body parsed:', body);
-    
+
     return Response.json({
       status: 'ok',
       echo: body,
@@ -29,7 +29,7 @@ export async function POST(request: Request) {
     });
   } catch (e) {
     console.error('[API DEBUG] Failed to parse body:', e);
-    
+
     return Response.json({
       status: 'error',
       error: e instanceof Error ? e.message : 'Unknown error',

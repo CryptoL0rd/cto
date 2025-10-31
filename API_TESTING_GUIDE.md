@@ -25,12 +25,14 @@ curl http://localhost:3000/api
 ## Available Endpoints
 
 ### Health Check
+
 ```bash
 GET /api
 Response: {"ok": true, "version": "1.0.0", "timestamp": "..."}
 ```
 
 ### Debug (Development)
+
 ```bash
 # GET - Returns environment info
 GET /api/debug
@@ -44,6 +46,7 @@ Content-Type: application/json
 ### Game Management
 
 #### Create Game
+
 ```bash
 POST /api/game/create
 Content-Type: application/json
@@ -69,6 +72,7 @@ Response:
 ```
 
 #### Join Game
+
 ```bash
 POST /api/game/join
 Content-Type: application/json
@@ -87,6 +91,7 @@ Response:
 ```
 
 #### Get Game State
+
 ```bash
 GET /api/game/state?game_id=ABC123
 
@@ -100,6 +105,7 @@ Response:
 ```
 
 #### Make Move
+
 ```bash
 POST /api/game/move
 Content-Type: application/json
@@ -123,6 +129,7 @@ Response:
 ### Chat
 
 #### Send Message
+
 ```bash
 POST /api/chat/send
 Content-Type: application/json
@@ -145,6 +152,7 @@ Response:
 ```
 
 #### List Messages
+
 ```bash
 GET /api/chat/list?game_id=ABC123&since=timestamp
 
@@ -174,6 +182,7 @@ Response:
 ## Debugging
 
 ### Check Logs Locally
+
 ```bash
 # Start with log output
 npm run dev
@@ -186,6 +195,7 @@ npm run dev
 ```
 
 ### Check Logs on Vercel
+
 1. Go to Vercel Dashboard
 2. Select your project
 3. Go to "Functions" tab
@@ -195,15 +205,18 @@ npm run dev
 ## Common Issues
 
 ### 405 Method Not Allowed
+
 - Check you're using the correct HTTP method (GET/POST)
 - Verify the endpoint path is correct
 
 ### 400 Bad Request
+
 - Check request body format (valid JSON)
 - Verify all required fields are present
 - Check parameter types (strings, numbers, etc.)
 
 ### 500 Internal Server Error
+
 - Check Vercel Function logs
 - Look for error stack traces
 - Verify environment variables (if any)
@@ -211,11 +224,13 @@ npm run dev
 ## Testing Workflow
 
 1. **Health Check**: Verify API is running
+
    ```bash
    curl http://localhost:3000/api
    ```
 
 2. **Create Game**: Get an invite code
+
    ```bash
    curl -X POST http://localhost:3000/api/game/create \
      -H "Content-Type: application/json" \
@@ -223,6 +238,7 @@ npm run dev
    ```
 
 3. **Join Game**: Use the invite code
+
    ```bash
    curl -X POST http://localhost:3000/api/game/join \
      -H "Content-Type: application/json" \

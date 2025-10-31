@@ -12,6 +12,7 @@ The issue was in `/lib/hooks.ts`:
 2. **`useChat` hook**: The `fetchMessages` callback had the same issue
 
 This created a problematic cycle:
+
 - Component renders → `useCallback` creates/recreates function reference
 - `useEffect` detects function reference change (even if the underlying dependencies like `gameId` haven't changed)
 - Effect re-runs → Clears interval and sets up new one
@@ -21,6 +22,7 @@ This created a problematic cycle:
 ### Why This Causes Issues
 
 Including a `useCallback` function in a `useEffect` dependency array is generally an anti-pattern because:
+
 - React may create new function references on each render due to reconciliation
 - This causes the effect to re-run even when the actual dependencies haven't changed
 - With polling intervals, this creates unstable behavior where intervals are constantly cleared and recreated
@@ -33,6 +35,7 @@ Including a `useCallback` function in a `useEffect` dependency array is generall
 **Moved fetch function definitions inside `useEffect` bodies**
 
 This eliminates the need to include callback functions in dependency arrays. The fetch functions now:
+
 - Are defined inside the effect scope
 - Have direct access to the current `gameId` and other dependencies
 - Don't need to be tracked as dependencies themselves
@@ -56,7 +59,7 @@ export function useGameState(gameId: string | null, pollingInterval = 2000) {
     // ...
     fetchGameState();
     intervalRef.current = setInterval(fetchGameState, pollingInterval);
-    
+
     return () => {
       // cleanup
     };
@@ -168,9 +171,11 @@ export function useGameState(gameId: string | null, pollingInterval = 2000) {
 ## Testing
 
 ### Build Verification
+
 ```bash
 npm run build
 ```
+
 ✅ Build completes successfully with no TypeScript errors
 
 ### Expected Behavior
@@ -201,12 +206,14 @@ npm run build
 Based on this fix, here are best practices for similar situations:
 
 ### ✅ DO:
+
 - Define fetch/callback functions inside `useEffect` when they're only used within that effect
 - Include only primitive values (strings, numbers, booleans) in dependency arrays
 - Use refs to track component mount state
 - Clear intervals/timeouts in cleanup functions
 
 ### ❌ DON'T:
+
 - Include callback functions in `useEffect` dependency arrays if they can cause re-render loops
 - Use `useCallback` for functions that are only used inside a single `useEffect`
 - Forget to check `mountedRef` before state updates (prevents memory leaks)
@@ -215,6 +222,7 @@ Based on this fix, here are best practices for similar situations:
 ## Additional Notes
 
 This fix addresses the infinite reload loop by ensuring that:
+
 1. Polling intervals are stable and only recreated when necessary
 2. State updates don't trigger unnecessary effect re-runs
 3. Navigation only happens when explicitly called (via `router.push()` on button clicks)

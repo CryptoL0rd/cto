@@ -5,7 +5,7 @@ function generateId(): string {
 export async function POST(request: Request) {
   try {
     console.log('[API JOIN] Function called');
-    
+
     // Parse body
     let body;
     try {
@@ -13,10 +13,7 @@ export async function POST(request: Request) {
       console.log('[API JOIN] Body parsed:', body);
     } catch (e) {
       console.error('[API JOIN] Failed to parse body:', e);
-      return Response.json(
-        { error: 'Invalid JSON body' },
-        { status: 400 }
-      );
+      return Response.json({ error: 'Invalid JSON body' }, { status: 400 });
     }
 
     const { invite_code, player_name } = body;
@@ -25,10 +22,7 @@ export async function POST(request: Request) {
     // Validate invite code
     if (!invite_code || typeof invite_code !== 'string') {
       console.log('[API JOIN] Missing invite code');
-      return Response.json(
-        { error: 'Invite code is required' },
-        { status: 400 }
-      );
+      return Response.json({ error: 'Invite code is required' }, { status: 400 });
     }
 
     if (invite_code.length !== 6) {
@@ -42,10 +36,7 @@ export async function POST(request: Request) {
     // Validate player name
     if (!player_name || typeof player_name !== 'string') {
       console.log('[API JOIN] Invalid player name');
-      return Response.json(
-        { error: 'Player name is required' },
-        { status: 400 }
-      );
+      return Response.json({ error: 'Player name is required' }, { status: 400 });
     }
 
     // Generate IDs
@@ -94,9 +85,9 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('[API JOIN] Unexpected error:', error);
     console.error('[API JOIN] Stack:', error instanceof Error ? error.stack : 'No stack');
-    
+
     return Response.json(
-      { 
+      {
         error: 'Internal server error',
         message: error instanceof Error ? error.message : 'Unknown error',
       },

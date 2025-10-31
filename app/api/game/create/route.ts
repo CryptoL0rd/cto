@@ -14,7 +14,7 @@ function generateId(): string {
 export async function POST(request: Request) {
   try {
     console.log('[API CREATE] Function called');
-    
+
     // Parse body
     let body;
     try {
@@ -22,10 +22,7 @@ export async function POST(request: Request) {
       console.log('[API CREATE] Body parsed:', body);
     } catch (e) {
       console.error('[API CREATE] Failed to parse body:', e);
-      return Response.json(
-        { error: 'Invalid JSON body' },
-        { status: 400 }
-      );
+      return Response.json({ error: 'Invalid JSON body' }, { status: 400 });
     }
 
     const { mode, player_name, is_ai_opponent } = body;
@@ -43,10 +40,7 @@ export async function POST(request: Request) {
     // Validate player name
     if (!player_name || typeof player_name !== 'string') {
       console.log('[API CREATE] Invalid player name');
-      return Response.json(
-        { error: 'Player name is required' },
-        { status: 400 }
-      );
+      return Response.json({ error: 'Player name is required' }, { status: 400 });
     }
 
     // Generate IDs
@@ -95,9 +89,9 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('[API CREATE] Unexpected error:', error);
     console.error('[API CREATE] Stack:', error instanceof Error ? error.stack : 'No stack');
-    
+
     return Response.json(
-      { 
+      {
         error: 'Internal server error',
         message: error instanceof Error ? error.message : 'Unknown error',
       },

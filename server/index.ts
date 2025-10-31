@@ -1,24 +1,9 @@
 #!/usr/bin/env node
-// Standalone WebSocket server for game state updates
-import { getWebSocketServer } from './websocket';
+// DEPRECATED: This standalone WebSocket server is no longer needed
+// The application now uses Pusher for real-time updates
+// See PUSHER_SETUP.md for setup instructions
 
-const port = parseInt(process.env.WS_PORT || '3001', 10);
-
-console.log('Starting WebSocket server...');
-const server = getWebSocketServer();
-
-console.log(`WebSocket server is running on ws://localhost:${port}`);
-console.log('Press Ctrl+C to stop');
-
-// Handle graceful shutdown
-process.on('SIGINT', () => {
-  console.log('\nShutting down WebSocket server...');
-  server.close();
-  process.exit(0);
-});
-
-process.on('SIGTERM', () => {
-  console.log('\nShutting down WebSocket server...');
-  server.close();
-  process.exit(0);
-});
+console.warn('⚠️  DEPRECATED: This WebSocket server is no longer used.');
+console.warn('The application now uses Pusher for real-time updates.');
+console.warn('Please see PUSHER_SETUP.md for setup instructions.');
+process.exit(1);

@@ -20,26 +20,26 @@ export default function Home() {
   const handleCreateGame = async (mode: GameMode) => {
     setLoading(true);
     setError('');
-    
+
     console.log('[Frontend] Creating game with mode:', mode);
-    
+
     try {
       // Generate a random player name
       const playerName = `Игрок-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
-      
+
       const url = '/api/game/create';
       console.log('[Frontend] Fetching:', url);
-      
+
       const response = await fetch(url, {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json',
+          Accept: 'application/json',
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           mode,
           player_name: playerName,
-          is_ai_opponent: false
+          is_ai_opponent: false,
         }),
       });
 
@@ -54,19 +54,19 @@ export default function Home() {
 
       const data = await response.json();
       console.log('[Frontend] Success data:', data);
-      
+
       if (data.player_id) {
         localStorage.setItem('player_id', data.player_id);
       }
-      
+
       if (data.game?.invite_code) {
         localStorage.setItem(`invite_code_${data.game.id}`, data.game.invite_code);
       }
-      
+
       if (data.game) {
         localStorage.setItem(`game_${data.game.id}`, JSON.stringify(data.game));
       }
-      
+
       setShowModeModal(false);
       console.log('[Frontend] Redirecting to /game/' + data.game.id);
       router.push(`/game/${data.game.id}`);
@@ -91,19 +91,19 @@ export default function Home() {
     try {
       // Generate a random player name
       const playerName = `Игрок-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
-      
+
       const url = '/api/game/join';
       console.log('[Frontend] Fetching:', url);
-      
+
       const response = await fetch(url, {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json',
+          Accept: 'application/json',
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           invite_code: inviteCode.toUpperCase(),
-          player_name: playerName
+          player_name: playerName,
         }),
       });
 
@@ -120,19 +120,19 @@ export default function Home() {
 
       const data = await response.json();
       console.log('[Frontend] Success data:', data);
-      
+
       if (data.player_id) {
         localStorage.setItem('player_id', data.player_id);
       }
-      
+
       if (data.game?.invite_code) {
         localStorage.setItem(`invite_code_${data.game.id}`, data.game.invite_code);
       }
-      
+
       if (data.game) {
         localStorage.setItem(`game_${data.game.id}`, JSON.stringify(data.game));
       }
-      
+
       setShowJoinModal(false);
       console.log('[Frontend] Redirecting to /game/' + data.game.id);
       router.push(`/game/${data.game.id}`);

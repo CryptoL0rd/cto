@@ -11,7 +11,7 @@ export function middleware(request: NextRequest) {
       timestamp: new Date().toISOString(),
     });
   }
-  
+
   return NextResponse.next();
 }
 

@@ -1,13 +1,17 @@
 # API Fixes Summary - 405 Errors Resolution
 
 ## Overview
+
 This document summarizes the fixes applied to resolve 405 Method Not Allowed errors on game API endpoints.
 
 ## Problem Statement
+
 POST requests to `/api/game/create` and `/api/game/join` were returning 405 errors, blocking the ability to create or join games.
 
 ## Root Cause
+
 The API routes were missing:
+
 1. `export const dynamic = 'force-dynamic'` - causing Next.js to cache responses
 2. Consistent logging for debugging
 3. Proper CORS headers for production deployment
@@ -16,9 +20,11 @@ The API routes were missing:
 ## Solutions Implemented
 
 ### 1. Added `force-dynamic` Export to All Routes
+
 This prevents Next.js from caching API responses and ensures each request is handled dynamically.
 
 **Files Updated:**
+
 - `/app/api/route.ts`
 - `/app/api/game/create/route.ts`
 - `/app/api/game/join/route.ts`
@@ -28,29 +34,34 @@ This prevents Next.js from caching API responses and ensures each request is han
 - `/app/api/chat/list/route.ts`
 
 **Change Made:**
+
 ```typescript
 export const dynamic = 'force-dynamic';
 ```
 
 ### 2. Enhanced Logging
+
 Added consistent logging with prefixes for better debugging:
+
 - `[API]` prefix for backend logs
 - `[Frontend]` prefix for frontend logs
 
 **Example:**
+
 ```typescript
 console.log('[API] Create game request:', { mode, player_name, is_ai_opponent });
 console.log('[Frontend] Response status:', response.status);
 ```
 
 ### 3. Improved Error Handling
+
 Enhanced error responses with more details:
 
 ```typescript
 catch (error) {
   console.error('[API] Error creating game:', error);
   return NextResponse.json(
-    { 
+    {
       error: 'Failed to create game',
       details: error instanceof Error ? error.message : 'Unknown error'
     },
@@ -60,6 +71,7 @@ catch (error) {
 ```
 
 ### 4. Updated Next.js Configuration
+
 Added CORS headers to `/next.config.mjs` for production deployment:
 
 ```javascript
@@ -79,19 +91,22 @@ async headers() {
 ```
 
 ### 5. Enhanced Frontend Error Handling
+
 Updated `app/page.tsx` to:
+
 - Add Accept header to requests
 - Log response headers for debugging
 - Parse error responses properly
 - Close modals on successful actions
 
 **Example:**
+
 ```typescript
 const response = await fetch(url, {
   method: 'POST',
-  headers: { 
+  headers: {
     'Content-Type': 'application/json',
-    'Accept': 'application/json',
+    Accept: 'application/json',
   },
   body: JSON.stringify({ mode, player_name, is_ai_opponent }),
 });
@@ -110,6 +125,7 @@ if (!response.ok) {
 All endpoints tested successfully with no 405 errors:
 
 ### Test Results
+
 ```
 ✅ GET /api - Health Check (200)
 ✅ POST /api/game/create - Create Game (201)
@@ -121,6 +137,7 @@ All endpoints tested successfully with no 405 errors:
 ```
 
 ### Validation Tests
+
 ```
 ✅ Invalid game mode returns 400 with error message
 ✅ Missing player name returns 400 with error message
@@ -133,7 +150,9 @@ All endpoints tested successfully with no 405 errors:
 ### Game Endpoints
 
 #### POST /api/game/create
+
 **Request:**
+
 ```json
 {
   "mode": "classic3" | "gomoku",
@@ -143,6 +162,7 @@ All endpoints tested successfully with no 405 errors:
 ```
 
 **Response (201):**
+
 ```json
 {
   "game": { ... },
@@ -153,7 +173,9 @@ All endpoints tested successfully with no 405 errors:
 ```
 
 #### POST /api/game/join
+
 **Request:**
+
 ```json
 {
   "invite_code": "string (6 chars)",
@@ -162,6 +184,7 @@ All endpoints tested successfully with no 405 errors:
 ```
 
 **Response (200):**
+
 ```json
 {
   "player": { ... },
@@ -171,10 +194,13 @@ All endpoints tested successfully with no 405 errors:
 ```
 
 #### GET /api/game/state
+
 **Query Parameters:**
+
 - `game_id`: string (required)
 
 **Response (200):**
+
 ```json
 {
   "game": { ... },
@@ -185,7 +211,9 @@ All endpoints tested successfully with no 405 errors:
 ```
 
 #### POST /api/game/move
+
 **Request:**
+
 ```json
 {
   "game_id": "string",
@@ -196,6 +224,7 @@ All endpoints tested successfully with no 405 errors:
 ```
 
 **Response (200):**
+
 ```json
 {
   "move": { ... },
@@ -208,7 +237,9 @@ All endpoints tested successfully with no 405 errors:
 ### Chat Endpoints
 
 #### POST /api/chat/send
+
 **Request:**
+
 ```json
 {
   "game_id": "string",
@@ -218,6 +249,7 @@ All endpoints tested successfully with no 405 errors:
 ```
 
 **Response (200):**
+
 ```json
 {
   "id": number,
@@ -230,11 +262,14 @@ All endpoints tested successfully with no 405 errors:
 ```
 
 #### GET /api/chat/list
+
 **Query Parameters:**
+
 - `game_id`: string (required)
 - `since`: string (optional)
 
 **Response (200):**
+
 ```json
 {
   "messages": [ ... ]
@@ -244,12 +279,15 @@ All endpoints tested successfully with no 405 errors:
 ## Verification
 
 ### Local Testing
+
 Run the test script:
+
 ```bash
 ./test_api_endpoints.sh
 ```
 
 ### Manual Testing
+
 ```bash
 # Health check
 curl http://localhost:3000/api
@@ -283,6 +321,7 @@ curl -X POST http://localhost:3000/api/game/join \
 ## Next Steps
 
 For production deployment:
+
 1. All endpoints are ready for deployment
 2. CORS headers are configured
 3. Logging is in place for debugging

@@ -1,7 +1,7 @@
 export async function GET(request: Request) {
   try {
     console.log('[API CHAT LIST] Function called');
-    
+
     const { searchParams } = new URL(request.url);
     const gameId = searchParams.get('game_id');
     const since = searchParams.get('since');
@@ -11,10 +11,7 @@ export async function GET(request: Request) {
     // Validate game_id
     if (!gameId) {
       console.log('[API CHAT LIST] Missing game_id');
-      return Response.json(
-        { error: 'game_id is required' },
-        { status: 400 }
-      );
+      return Response.json({ error: 'game_id is required' }, { status: 400 });
     }
 
     // Return empty messages array (mock implementation)
@@ -33,9 +30,9 @@ export async function GET(request: Request) {
   } catch (error) {
     console.error('[API CHAT LIST] Unexpected error:', error);
     console.error('[API CHAT LIST] Stack:', error instanceof Error ? error.stack : 'No stack');
-    
+
     return Response.json(
-      { 
+      {
         error: 'Internal server error',
         message: error instanceof Error ? error.message : 'Unknown error',
       },

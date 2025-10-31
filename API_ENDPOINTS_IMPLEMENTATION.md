@@ -1,18 +1,21 @@
 # API Endpoints Implementation Summary
 
 ## Overview
+
 Successfully implemented Next.js API routes to replace non-functional Python FastAPI endpoints. All endpoints are now working correctly with proper error handling and response structures.
 
 ## Implemented Endpoints
 
 ### 1. Health Check
+
 - **Endpoint**: `GET /api`
 - **Response**: `{ ok: true, version: string, timestamp: number }`
 - **Status**: ✅ Working
 
 ### 2. Create Game
+
 - **Endpoint**: `POST /api/game/create`
-- **Request Body**: 
+- **Request Body**:
   ```json
   {
     "mode": "classic3" | "gomoku",
@@ -20,7 +23,7 @@ Successfully implemented Next.js API routes to replace non-functional Python Fas
     "is_ai_opponent": boolean
   }
   ```
-- **Response**: 
+- **Response**:
   ```json
   {
     "game": {...},
@@ -33,15 +36,16 @@ Successfully implemented Next.js API routes to replace non-functional Python Fas
 - **Status**: ✅ Working
 
 ### 3. Join Game
+
 - **Endpoint**: `POST /api/game/join`
-- **Request Body**: 
+- **Request Body**:
   ```json
   {
     "invite_code": string (6 chars),
     "player_name": string
   }
   ```
-- **Response**: 
+- **Response**:
   ```json
   {
     "player": {...},
@@ -53,8 +57,9 @@ Successfully implemented Next.js API routes to replace non-functional Python Fas
 - **Status**: ✅ Working
 
 ### 4. Get Game State
+
 - **Endpoint**: `GET /api/game/state?game_id={id}`
-- **Response**: 
+- **Response**:
   ```json
   {
     "game": {...},
@@ -67,8 +72,9 @@ Successfully implemented Next.js API routes to replace non-functional Python Fas
 - **Status**: ✅ Working (returns mock data)
 
 ### 5. Make Move
+
 - **Endpoint**: `POST /api/game/move`
-- **Request Body**: 
+- **Request Body**:
   ```json
   {
     "game_id": string,
@@ -77,7 +83,7 @@ Successfully implemented Next.js API routes to replace non-functional Python Fas
     "column_index": number
   }
   ```
-- **Response**: 
+- **Response**:
   ```json
   {
     "move": {...},
@@ -90,8 +96,9 @@ Successfully implemented Next.js API routes to replace non-functional Python Fas
 - **Status**: ✅ Working (returns mock data)
 
 ### 6. Send Chat Message
+
 - **Endpoint**: `POST /api/chat/send`
-- **Request Body**: 
+- **Request Body**:
   ```json
   {
     "game_id": string,
@@ -104,8 +111,9 @@ Successfully implemented Next.js API routes to replace non-functional Python Fas
 - **Status**: ✅ Working
 
 ### 7. List Chat Messages
+
 - **Endpoint**: `GET /api/chat/list?game_id={id}&since={timestamp}`
-- **Response**: 
+- **Response**:
   ```json
   {
     "messages": [...]
@@ -117,6 +125,7 @@ Successfully implemented Next.js API routes to replace non-functional Python Fas
 ## Frontend Changes
 
 ### Updated `app/page.tsx`
+
 - ✅ Added console logging for debugging:
   - `[CREATE GAME]` prefix for create game flow
   - `[JOIN GAME]` prefix for join game flow
@@ -136,7 +145,7 @@ All endpoints tested successfully:
 ✅ POST /api/game/create → 201 Created
 ✅ Invalid mode → 400 Bad Request
 
-# Join game  
+# Join game
 ✅ POST /api/game/join → 200 OK
 ✅ Invalid code format → 400 Bad Request
 
@@ -161,6 +170,7 @@ All endpoints tested successfully:
 - Multiple requests will generate different mock data
 
 This is intentional as the Python SQLite backend doesn't work on Vercel. To add persistence:
+
 1. Use a proper database (PostgreSQL, MySQL, MongoDB, etc.)
 2. Or use Vercel KV/Redis for session storage
 3. Or integrate with the Python backend if deployed elsewhere
@@ -201,6 +211,7 @@ app/
 ## Next Steps
 
 To make the game fully functional:
+
 1. Add persistent database (e.g., Vercel Postgres, Supabase, or PlanetScale)
 2. Implement proper game logic in the move endpoint
 3. Store and retrieve game state
