@@ -1,46 +1,50 @@
-import { getGameState, createGameState } from '../gameState';
+import { kv } from '@vercel/kv';
+import { NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
   try {
-    console.log('[API STATE] Function called');
-
     const { searchParams } = new URL(request.url);
     const gameId = searchParams.get('game_id');
 
-    console.log('[API STATE] Params:', { gameId });
-
-    // Validate game_id
     if (!gameId) {
-      console.log('[API STATE] Missing game_id');
-      return Response.json({ error: 'game_id parameter is required' }, { status: 400 });
+      return NextResponse.json({ error: 'game_id is required' }, { status: 400 });
     }
 
-    // Get or create game state
-    let gameState = getGameState(gameId);
+    const game = await kv.get<any>(`game:${gameId}`);
 
-    if (!gameState) {
-      console.log('[API STATE] Creating new game state for:', gameId);
-      gameState = createGameState(gameId);
+    if (!game) {
+      return NextResponse.json({ error: 'Game not found' }, { status: 404 });
     }
 
-    console.log('[API STATE] Returning game state with', gameState.moves.length, 'moves');
-
-    return Response.json(gameState, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    console.log('[STATE] Game loaded:', {
+      gameId,
+      status: game.status,
+      players: game.players.length,
     });
-  } catch (error) {
-    console.error('[API STATE] Unexpected error:', error);
-    console.error('[API STATE] Stack:', error instanceof Error ? error.stack : 'No stack');
 
-    return Response.json(
+    // Return in the format expected by the frontend
+    return NextResponse.json(
       {
-        error: 'Internal server error',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        game: {
+          id: game.id,
+          invite_code: game.invite_code,
+          mode: game.mode,
+          status: game.status,
+          created_at: game.created_at,
+          started_at: game.started_at,
+          finished_at: game.finished_at,
+          current_turn: game.current_turn,
+          winner_id: game.winner_id,
+        },
+        players: game.players,
+        moves: [], // TODO: Implement moves from KV if needed
+        messages: [], // TODO: Implement messages from KV if needed
       },
-      { status: 500 }
+      { status: 200 }
     );
+  } catch (error) {
+    console.error('[STATE] Error:', error);
+    return NextResponse.json({ error: 'Failed to get game state' }, { status: 500 });
   }
 }
 
