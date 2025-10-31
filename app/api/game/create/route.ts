@@ -1,10 +1,20 @@
+import { kv } from '@vercel/kv';
+import { NextResponse } from 'next/server';
+import Pusher from 'pusher';
+
+const pusher = new Pusher({
+  appId: process.env.PUSHER_APP_ID!,
+  key: process.env.PUSHER_KEY!,
+  secret: process.env.PUSHER_SECRET!,
+  cluster: process.env.PUSHER_CLUSTER!,
+  useTLS: true,
+});
+
 function generateInviteCode(): string {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let code = '';
-  for (let i = 0; i < 6; i++) {
-    code += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return code;
+  return Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join(
+    ''
+  );
 }
 
 function generateId(): string {
@@ -13,90 +23,62 @@ function generateId(): string {
 
 export async function POST(request: Request) {
   try {
-    console.log('[API CREATE] Function called');
+    const body = await request.json();
+    const { mode, player_name } = body;
 
-    // Parse body
-    let body;
-    try {
-      body = await request.json();
-      console.log('[API CREATE] Body parsed:', body);
-    } catch (e) {
-      console.error('[API CREATE] Failed to parse body:', e);
-      return Response.json({ error: 'Invalid JSON body' }, { status: 400 });
+    if (!mode || !['classic3', 'gomoku5'].includes(mode)) {
+      return NextResponse.json({ error: 'Invalid game mode' }, { status: 400 });
     }
 
-    const { mode, player_name, is_ai_opponent } = body;
-    console.log('[API CREATE] Params:', { mode, player_name, is_ai_opponent });
-
-    // Validate mode
-    if (!mode || !['classic3', 'gomoku', 'gomoku5'].includes(mode)) {
-      console.log('[API CREATE] Invalid mode:', mode);
-      return Response.json(
-        { error: 'Invalid game mode. Must be classic3, gomoku, or gomoku5' },
-        { status: 400 }
-      );
-    }
-
-    // Validate player name
     if (!player_name || typeof player_name !== 'string') {
-      console.log('[API CREATE] Invalid player name');
-      return Response.json({ error: 'Player name is required' }, { status: 400 });
+      return NextResponse.json({ error: 'Player name is required' }, { status: 400 });
     }
 
-    // Generate IDs
     const gameId = `game_${generateId()}`;
-    const inviteCode = generateInviteCode();
     const playerId = generateId();
+    const inviteCode = generateInviteCode();
     const now = new Date().toISOString();
-
-    console.log('[API CREATE] Generated:', { gameId, inviteCode, playerId });
 
     const game = {
       id: gameId,
       invite_code: inviteCode,
       mode,
-      status: is_ai_opponent ? 'active' : 'waiting',
-      created_at: now,
-      started_at: is_ai_opponent ? now : null,
-      finished_at: null,
-      current_turn: is_ai_opponent ? 1 : null,
+      status: 'waiting',
+      current_turn: null,
       winner_id: null,
+      board: mode === 'classic3' ? Array(9).fill(null) : [],
+      players: [
+        {
+          id: playerId,
+          game_id: gameId,
+          player_number: 1,
+          player_name,
+          is_ai: false,
+          joined_at: now,
+        },
+      ],
+      created_at: now,
+      started_at: null,
+      finished_at: null,
     };
 
-    const player = {
-      id: playerId,
-      game_id: gameId,
-      player_number: 1,
-      player_name,
-      joined_at: now,
-      is_ai: false,
-    };
+    // Save to KV
+    await kv.set(`game:${gameId}`, game, { ex: 86400 }); // 24 hours
+    await kv.set(`invite:${inviteCode}`, gameId, { ex: 86400 });
 
-    const responseData = {
-      game,
-      player_id: playerId,
-      player,
-    };
+    console.log('[CREATE] Game created:', { gameId, inviteCode });
 
-    console.log('[API CREATE] Success, returning:', responseData);
-
-    return Response.json(responseData, {
-      status: 201,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-  } catch (error) {
-    console.error('[API CREATE] Unexpected error:', error);
-    console.error('[API CREATE] Stack:', error instanceof Error ? error.stack : 'No stack');
-
-    return Response.json(
+    return NextResponse.json(
       {
-        error: 'Internal server error',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        game,
+        player_id: playerId,
+        player: game.players[0],
       },
-      { status: 500 }
+      { status: 201 }
     );
+  } catch (error) {
+    console.error('[CREATE] Error:', error);
+    return NextResponse.json({ error: 'Failed to create game' }, { status: 500 });
   }
 }
 

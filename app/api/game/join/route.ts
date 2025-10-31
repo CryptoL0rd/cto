@@ -1,98 +1,110 @@
+import { kv } from '@vercel/kv';
+import { NextResponse } from 'next/server';
+import Pusher from 'pusher';
+
+const pusher = new Pusher({
+  appId: process.env.PUSHER_APP_ID!,
+  key: process.env.PUSHER_KEY!,
+  secret: process.env.PUSHER_SECRET!,
+  cluster: process.env.PUSHER_CLUSTER!,
+  useTLS: true,
+});
+
 function generateId(): string {
   return `${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
 }
 
 export async function POST(request: Request) {
   try {
-    console.log('[API JOIN] Function called');
-
-    // Parse body
-    let body;
-    try {
-      body = await request.json();
-      console.log('[API JOIN] Body parsed:', body);
-    } catch (e) {
-      console.error('[API JOIN] Failed to parse body:', e);
-      return Response.json({ error: 'Invalid JSON body' }, { status: 400 });
-    }
-
+    const body = await request.json();
     const { invite_code, player_name } = body;
-    console.log('[API JOIN] Params:', { invite_code, player_name });
 
-    // Validate invite code
-    if (!invite_code || typeof invite_code !== 'string') {
-      console.log('[API JOIN] Missing invite code');
-      return Response.json({ error: 'Invite code is required' }, { status: 400 });
+    if (!invite_code || typeof invite_code !== 'string' || invite_code.length !== 6) {
+      return NextResponse.json({ error: 'Invalid invite code' }, { status: 400 });
     }
 
-    if (invite_code.length !== 6) {
-      console.log('[API JOIN] Invalid invite code length:', invite_code.length);
-      return Response.json(
-        { error: 'Invalid invite code format. Must be 6 characters' },
-        { status: 400 }
+    if (!player_name || typeof player_name !== 'string') {
+      return NextResponse.json({ error: 'Player name is required' }, { status: 400 });
+    }
+
+    const inviteCodeUpper = invite_code.toUpperCase();
+
+    // 1. Find game_id by invite_code
+    const gameId = await kv.get<string>(`invite:${inviteCodeUpper}`);
+
+    if (!gameId) {
+      console.log('[JOIN] Game not found for code:', inviteCodeUpper);
+      return NextResponse.json({ error: 'Game not found' }, { status: 404 });
+    }
+
+    // 2. Load game from KV
+    const game = await kv.get<any>(`game:${gameId}`);
+
+    if (!game) {
+      return NextResponse.json({ error: 'Game not found' }, { status: 404 });
+    }
+
+    // 3. Check that game is in waiting status
+    if (game.status !== 'waiting') {
+      return NextResponse.json(
+        { error: 'Game already started or finished' },
+        { status: 409 }
       );
     }
 
-    // Validate player name
-    if (!player_name || typeof player_name !== 'string') {
-      console.log('[API JOIN] Invalid player name');
-      return Response.json({ error: 'Player name is required' }, { status: 400 });
+    // 4. Check that game is not full
+    if (game.players.length >= 2) {
+      return NextResponse.json({ error: 'Game is full' }, { status: 409 });
     }
 
-    // Generate IDs
-    const gameId = `game_${generateId()}`;
+    // 5. Add second player
     const playerId = generateId();
     const now = new Date().toISOString();
-    const code = invite_code.toUpperCase();
 
-    console.log('[API JOIN] Generated:', { gameId, playerId, inviteCode: code });
-
-    const game = {
-      id: gameId,
-      invite_code: code,
-      mode: 'classic3',
-      status: 'active',
-      created_at: new Date(Date.now() - 60000).toISOString(),
-      started_at: now,
-      finished_at: null,
-      current_turn: 1,
-      winner_id: null,
-    };
-
-    const player = {
+    const newPlayer = {
       id: playerId,
       game_id: gameId,
       player_number: 2,
       player_name,
-      joined_at: now,
       is_ai: false,
+      joined_at: now,
     };
 
-    const responseData = {
-      game,
-      player,
-      player_id: playerId,
-    };
+    game.players.push(newPlayer);
+    game.status = 'active';
+    game.current_turn = 1; // First player goes first
+    game.started_at = now;
 
-    console.log('[API JOIN] Success, returning:', responseData);
+    // 6. Update in KV
+    await kv.set(`game:${gameId}`, game, { ex: 86400 });
 
-    return Response.json(responseData, {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-  } catch (error) {
-    console.error('[API JOIN] Unexpected error:', error);
-    console.error('[API JOIN] Stack:', error instanceof Error ? error.stack : 'No stack');
+    console.log('[JOIN] Player joined:', { gameId, playerId, inviteCode: inviteCodeUpper });
 
-    return Response.json(
+    // 7. Send notification to first player through Pusher
+    try {
+      await pusher.trigger(`game-${gameId}`, 'player-joined', {
+        game,
+        player: newPlayer,
+        message: 'Opponent connected! Game starting...',
+      });
+
+      console.log('[JOIN] Pusher notification sent to game:', gameId);
+    } catch (pusherError) {
+      console.error('[JOIN] Pusher error:', pusherError);
+      // Continue even if Pusher fails
+    }
+
+    return NextResponse.json(
       {
-        error: 'Internal server error',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        game,
+        player: newPlayer,
+        player_id: playerId,
       },
-      { status: 500 }
+      { status: 200 }
     );
+  } catch (error) {
+    console.error('[JOIN] Error:', error);
+    return NextResponse.json({ error: 'Failed to join game' }, { status: 500 });
   }
 }
 
