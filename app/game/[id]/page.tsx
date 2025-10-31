@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Pusher from 'pusher-js';
 import GameBoard3x3 from '@/components/GameBoard3x3';
 import { useLocalPlayer } from '@/lib/hooks';
@@ -21,8 +21,8 @@ export default function GamePage() {
   const pusherRef = useRef<Pusher | null>(null);
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Function to load game state
-  const fetchGameState = async () => {
+  // Function to load game state (wrapped in useCallback for stable reference)
+  const fetchGameState = useCallback(async () => {
     try {
       const response = await fetch(`/api/game/state?game_id=${gameId}`);
 
@@ -40,12 +40,12 @@ export default function GamePage() {
       setError('Failed to load game');
       setLoading(false);
     }
-  };
+  }, [gameId]);
 
   // Initial load
   useEffect(() => {
     fetchGameState();
-  }, [gameId]);
+  }, [fetchGameState]);
 
   // Setup Pusher for real-time updates
   useEffect(() => {
@@ -140,7 +140,7 @@ export default function GamePage() {
         pollingIntervalRef.current = null;
       }
     };
-  }, [gameState?.game?.status, gameId]);
+  }, [gameState?.game?.status, fetchGameState]);
 
   if (loading || playerLoading) {
     return (
@@ -240,7 +240,7 @@ export default function GamePage() {
                 {isMyTurn ? (
                   <p className="text-green-400 font-semibold">🟢 Your turn</p>
                 ) : (
-                  <p className="text-gray-400">⏳ Opponent's turn</p>
+                  <p className="text-gray-400">⏳ Opponent&apos;s turn</p>
                 )}
                 {playerId && (
                   <div className="mt-6">
